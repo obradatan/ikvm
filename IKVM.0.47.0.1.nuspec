@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>IKVM</id>
+        <version>0.47.0.1</version>
+        <authors>Ullink</authors>
+        <owners>Ullink</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>IKVM 0.47 compiled with Ullink Key</description>
+        <summary />
+        <language />
+    </metadata>
+    <files>
+        <file src="bin\IKVM.AWT.WinForms.dll" target="lib\net35\IKVM.AWT.WinForms.dll" />
+        <file src="bin\IKVM.OpenJDK.Beans.dll" target="lib\net35\IKVM.OpenJDK.Beans.dll" />
+        <file src="bin\IKVM.OpenJDK.Charsets.dll" target="lib\net35\IKVM.OpenJDK.Charsets.dll" />
+        <file src="bin\IKVM.OpenJDK.Corba.dll" target="lib\net35\IKVM.OpenJDK.Corba.dll" />
+        <file src="bin\IKVM.OpenJDK.Core.dll" target="lib\net35\IKVM.OpenJDK.Core.dll" />
+        <file src="bin\IKVM.OpenJDK.Jdbc.dll" target="lib\net35\IKVM.OpenJDK.Jdbc.dll" />
+        <file src="bin\IKVM.OpenJDK.Management.dll" target="lib\net35\IKVM.OpenJDK.Management.dll" />
+        <file src="bin\IKVM.OpenJDK.Media.dll" target="lib\net35\IKVM.OpenJDK.Media.dll" />
+        <file src="bin\IKVM.OpenJDK.Misc.dll" target="lib\net35\IKVM.OpenJDK.Misc.dll" />
+        <file src="bin\IKVM.OpenJDK.Naming.dll" target="lib\net35\IKVM.OpenJDK.Naming.dll" />
+        <file src="bin\IKVM.OpenJDK.Remoting.dll" target="lib\net35\IKVM.OpenJDK.Remoting.dll" />
+        <file src="bin\IKVM.OpenJDK.Security.dll" target="lib\net35\IKVM.OpenJDK.Security.dll" />
+        <file src="bin\IKVM.OpenJDK.SwingAWT.dll" target="lib\net35\IKVM.OpenJDK.SwingAWT.dll" />
+        <file src="bin\IKVM.OpenJDK.Text.dll" target="lib\net35\IKVM.OpenJDK.Text.dll" />
+        <file src="bin\IKVM.OpenJDK.Tools.dll" target="lib\net35\IKVM.OpenJDK.Tools.dll" />
+        <file src="bin\IKVM.OpenJDK.Util.dll" target="lib\net35\IKVM.OpenJDK.Util.dll" />
+        <file src="bin\IKVM.OpenJDK.XML.API.dll" target="lib\net35\IKVM.OpenJDK.XML.API.dll" />
+        <file src="bin\IKVM.OpenJDK.XML.Bind.dll" target="lib\net35\IKVM.OpenJDK.XML.Bind.dll" />
+        <file src="bin\IKVM.OpenJDK.XML.Crypto.dll" target="lib\net35\IKVM.OpenJDK.XML.Crypto.dll" />
+        <file src="bin\IKVM.OpenJDK.XML.Parse.dll" target="lib\net35\IKVM.OpenJDK.XML.Parse.dll" />
+        <file src="bin\IKVM.OpenJDK.XML.Transform.dll" target="lib\net35\IKVM.OpenJDK.XML.Transform.dll" />
+        <file src="bin\IKVM.OpenJDK.XML.WebServices.dll" target="lib\net35\IKVM.OpenJDK.XML.WebServices.dll" />
+        <file src="bin\IKVM.OpenJDK.XML.XPath.dll" target="lib\net35\IKVM.OpenJDK.XML.XPath.dll" />
+        <file src="bin\IKVM.Reflection.dll" target="lib\net35\IKVM.Reflection.dll" />
+        <file src="bin\IKVM.Runtime.dll" target="lib\net35\IKVM.Runtime.dll" />
+        <file src="bin\IKVM.Runtime.JNI.dll" target="lib\net35\IKVM.Runtime.JNI.dll" />
+    </files>
+</package>
