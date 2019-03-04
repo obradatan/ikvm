@@ -117,6 +117,8 @@ using jnInet6Address = java.net.Inet6Address;
 using jnNetworkInterface = java.net.NetworkInterface;
 using jnInterfaceAddress = java.net.InterfaceAddress;
 using ssaGetPropertyAction = sun.security.action.GetPropertyAction;
+using juDate = java.util.Date;
+
 #endif
 
 namespace IKVM.Runtime
@@ -7861,12 +7863,304 @@ namespace IKVM.NativeCode.sun.security.krb5
 {
 	static class Credentials
 	{
-		public static object acquireDefaultNativeCreds()
+#if !FIRST_PASS
+        private static juDate ToJavaDate(long time)
+        {
+            // convert 100-nanosecond intervals to milliseconds offset milliseconds from Jan 1, 1601 to Jan 1, 1970
+            const long DIFF_IN_MILLIS = 11644473600000L;
+            return new juDate((time / 10000) - DIFF_IN_MILLIS);
+        }
+#endif
+        public static object acquireDefaultNativeCreds()
 		{
-			// TODO
+#if FIRST_PASS
 			return null;
-		}
-	}
+#else
+            Ticket ticket;
+            try
+            {
+                ticket = Win32KerberosSupport.GetTicket();
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                // there's no way to return more specific error information
+                return null;
+            }
+            // we use reflection to instantiate the Credentials object,
+            // because we don't want a static dependency on IKVM.OpenJDK.Security.dll
+            return jlClass.forName("sun.security.krb5.Credentials")
+                .getConstructor(typeof(byte[]),
+                                typeof(string),
+                                typeof(string),
+                                typeof(byte[]),
+                                typeof(int),
+                                typeof(bool[]),
+                                typeof(juDate),
+                                typeof(juDate),
+                                typeof(juDate),
+                                typeof(juDate),
+                                typeof(jnInetAddress[]))
+                .newInstance(ticket.EncodedTicket,
+                                ticket.ClientNames[0],
+                                ticket.TargetNames[0],
+                                ticket.SessionKey,
+                                jlInteger.valueOf(ticket.SessionKeyType),
+                                null,
+                                ToJavaDate(ticket.StartTime),
+                                ToJavaDate(ticket.StartTime),
+                                ToJavaDate(ticket.EndTime),
+                                ToJavaDate(ticket.RenewUntil),
+                                null);
+#endif
+        }
+
+        sealed class Ticket
+        {
+            public byte[] EncodedTicket;
+            public string[] ClientNames;
+            public string[] TargetNames;
+            public byte[] SessionKey;
+            public int SessionKeyType;
+            public long StartTime;
+            public long EndTime;
+            public long RenewUntil;
+        }
+
+        static class Win32KerberosSupport
+        {
+            const int STATUS_SUCCESS = 0;
+
+            [System.Security.SecurityCritical]
+            sealed class LsaSafeHandle : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid
+            {
+                internal LsaSafeHandle()
+                    : base(true)
+                {
+                }
+
+                [System.Security.SecurityCritical]
+                override protected bool ReleaseHandle()
+                {
+                    return LsaDeregisterLogonProcess(handle) == STATUS_SUCCESS;
+                }
+            }
+
+            enum KERB_PROTOCOL_MESSAGE_TYPE
+            {
+                KerbRetrieveTicketMessage = 4
+            }
+
+            [StructLayout(LayoutKind.Sequential)]
+            struct LsaString
+            {
+                public ushort Length;
+                public ushort MaximumLength;
+                [MarshalAs(UnmanagedType.LPStr)]
+                public string Buffer;
+            }
+
+            [StructLayout(LayoutKind.Sequential)]
+            struct LUID
+            {
+                public uint LowPart;
+                public int HighPart;
+            }
+
+            [StructLayout(LayoutKind.Sequential)]
+            struct KERB_QUERY_TKT_CACHE_REQUEST
+            {
+                public KERB_PROTOCOL_MESSAGE_TYPE MessageType;
+                public LUID LoginId;
+            }
+
+            [StructLayout(LayoutKind.Sequential)]
+            struct UNICODE_STRING
+            {
+                public ushort Length;
+                public ushort MaximumLength;
+                public IntPtr Buffer;
+            }
+
+            [StructLayout(LayoutKind.Sequential)]
+            struct KERB_CRYPTO_KEY
+            {
+                public int KeyType;
+                public int Length;
+                public IntPtr Value;
+            }
+
+            [StructLayout(LayoutKind.Sequential)]
+            sealed class KERB_RETRIEVE_TKT_RESPONSE
+            {
+                public KERB_EXTERNAL_TICKET Ticket;
+            }
+
+            [StructLayout(LayoutKind.Sequential)]
+            struct KERB_EXTERNAL_TICKET
+            {
+                public IntPtr ServiceName;
+                public IntPtr TargetName;
+                public IntPtr ClientName;
+                public UNICODE_STRING DomainName;
+                public UNICODE_STRING TargetDomainName;
+                public UNICODE_STRING AltTargetDomainName;
+                public KERB_CRYPTO_KEY SessionKey;
+                public uint TicketFlags;
+                public uint Flags;
+                public long KeyExpirationTime;
+                public long StartTime;
+                public long EndTime;
+                public long RenewUntil;
+                public long TimeSkew;
+                public int EncodedTicketSize;
+                public IntPtr EncodedTicket;
+            }
+
+            [DllImport("secur32.dll")]
+            static extern int LsaDeregisterLogonProcess(IntPtr handle);
+
+            [DllImport("secur32.dll")]
+            static extern int LsaConnectUntrusted(out LsaSafeHandle LsaHandle);
+
+            [DllImport("secur32.dll")]
+            static extern int LsaCallAuthenticationPackage(
+                    LsaSafeHandle LsaHandle,
+                    uint AuthenticationPackage,
+                    ref KERB_QUERY_TKT_CACHE_REQUEST ProtocolSubmitBuffer,
+                    int SubmitBufferLength,
+                    out IntPtr ProtocolReturnBuffer,
+                    out int ReturnBufferLength,
+                    out int ProtocolStatus);
+
+            [DllImport("secur32.dll")]
+            static extern int LsaLookupAuthenticationPackage(
+                    LsaSafeHandle LsaHandle,
+                    ref LsaString PackageName,
+                    out uint AuthenticationPackage);
+
+            [DllImport("advapi32.dll")]
+            static extern int LsaNtStatusToWinError(int status);
+
+            [DllImport("secur32.dll")]
+            static extern int LsaFreeReturnBuffer(IntPtr buffer);
+
+            static void Check(int ntstatus)
+            {
+                if (ntstatus != STATUS_SUCCESS)
+                {
+                    throw new System.ComponentModel.Win32Exception(LsaNtStatusToWinError(ntstatus));
+                }
+            }
+
+            [System.Security.SecuritySafeCritical]
+            internal static Ticket GetTicket()
+            {
+                LsaSafeHandle lsaHandle = null;
+                try
+                {
+                    // connect to the LSA outside the TCB
+                    Check(LsaConnectUntrusted(out lsaHandle));
+
+                    string kerberos = "Kerberos";
+                    LsaString lsaString = new LsaString();
+                    lsaString.Length = (ushort)kerberos.Length;
+                    lsaString.MaximumLength = (ushort)kerberos.Length;
+                    lsaString.Buffer = kerberos;
+
+                    uint authenticationPackage = 0;
+
+                    // lookup the index for the Kerberos authentication package
+                    Check(LsaLookupAuthenticationPackage(lsaHandle, ref lsaString, out authenticationPackage));
+
+                    KERB_QUERY_TKT_CACHE_REQUEST request = new KERB_QUERY_TKT_CACHE_REQUEST();
+                    request.MessageType = KERB_PROTOCOL_MESSAGE_TYPE.KerbRetrieveTicketMessage;
+                    request.LoginId.LowPart = 0;
+                    request.LoginId.HighPart = 0;
+
+                    int submitBufferLength = Marshal.SizeOf(typeof(KERB_QUERY_TKT_CACHE_REQUEST));
+                    IntPtr responsePointer = IntPtr.Zero;
+                    int returnBufferLength = 0;
+                    int protocolStatus = 0;
+
+                    try
+                    {
+                        // send the request to Kerberos and get a response
+                        Check(LsaCallAuthenticationPackage(lsaHandle,
+                                authenticationPackage,
+                                ref request,
+                                submitBufferLength,
+                                out responsePointer,
+                                out returnBufferLength,
+                                out protocolStatus));
+
+                        Check(protocolStatus);
+
+                        if (responsePointer == IntPtr.Zero || returnBufferLength < Marshal.SizeOf(typeof(KERB_RETRIEVE_TKT_RESPONSE)))
+                        {
+                            throw new InvalidOperationException();
+                        }
+
+                        KERB_RETRIEVE_TKT_RESPONSE response = new KERB_RETRIEVE_TKT_RESPONSE();
+                        Marshal.PtrToStructure(responsePointer, response);
+
+                        Ticket ticket = new Ticket();
+                        ticket.EncodedTicket = ReadBytes(response.Ticket.EncodedTicket, response.Ticket.EncodedTicketSize);
+                        ticket.ClientNames = ReadExternalName(response.Ticket.ClientName);
+                        ticket.TargetNames = ReadExternalName(response.Ticket.TargetName);
+                        ticket.SessionKey = ReadBytes(response.Ticket.SessionKey.Value, response.Ticket.SessionKey.Length);
+                        ticket.SessionKeyType = response.Ticket.SessionKey.KeyType;
+                        ticket.StartTime = response.Ticket.StartTime;
+                        ticket.EndTime = response.Ticket.EndTime;
+                        ticket.RenewUntil = response.Ticket.RenewUntil;
+                        return ticket;
+                    }
+                    finally
+                    {
+                        if (responsePointer != IntPtr.Zero)
+                        {
+                            Check(LsaFreeReturnBuffer(responsePointer));
+                        }
+                    }
+                }
+                finally
+                {
+                    if (lsaHandle != null)
+                    {
+                        lsaHandle.Close();
+                    }
+                }
+            }
+
+            [System.Security.SecurityCritical]
+            private static string[] ReadExternalName(IntPtr ptr)
+            {
+                int nameCount = (ushort)Marshal.ReadInt16(ptr, 2);
+                ptr = (IntPtr)((long)ptr + 4 + IntPtr.Size - 4);
+                string[] names = new string[nameCount];
+                for (int i = 0; i < nameCount; i++)
+                {
+                    names[i] = ReadUnicodeString(ref ptr);
+                }
+                return names;
+            }
+
+            [System.Security.SecurityCritical]
+            private static string ReadUnicodeString(ref IntPtr ptr)
+            {
+                UNICODE_STRING str = (UNICODE_STRING)Marshal.PtrToStructure(ptr, typeof(UNICODE_STRING));
+                ptr = (IntPtr)((long)ptr + Marshal.SizeOf(typeof(UNICODE_STRING)));
+                return Marshal.PtrToStringUni(str.Buffer, str.Length / 2);
+            }
+
+            [System.Security.SecurityCritical]
+            private static byte[] ReadBytes(IntPtr ptr, int length)
+            {
+                byte[] buf = new byte[length];
+                Marshal.Copy(ptr, buf, 0, length);
+                return buf;
+            }
+        }
+    }
 
 	static class Config
 	{
@@ -7943,9 +8237,28 @@ namespace IKVM.NativeCode.com.sun.security.auth.module
 	{
 		public static void getCurrent(object thisObj, bool debug)
 		{
-			throw new NotImplementedException();
-		}
-	}
+            System.Security.Principal.WindowsIdentity id = System.Security.Principal.WindowsIdentity.GetCurrent();
+            string[] name = id.Name.Split('\\');
+            SetField(thisObj, "userName", name[1]);
+            SetField(thisObj, "domain", name[0]);
+            SetField(thisObj, "domainSID", id.User.AccountDomainSid.Value);
+            SetField(thisObj, "userSID", id.User.Value);
+            string[] groups = new string[id.Groups.Count];
+            for (int i = 0; i < groups.Length; i++)
+            {
+                groups[i] = id.Groups[i].Value;
+            }
+            SetField(thisObj, "groupIDs", groups);
+            // HACK it turns out that Groups[0] is the primary group, but AFAIK this is not documented anywhere
+            SetField(thisObj, "primaryGroupID", groups[0]);
+            SetField(thisObj, "impersonationToken", id.Token.ToInt64());
+        }
+
+        private static void SetField(object thisObj, string field, object value)
+        {
+            thisObj.GetType().GetField(field, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(thisObj, value);
+        }
+    }
 
 	static class SolarisSystem
 	{
