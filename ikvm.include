@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <project name="ikvm-include">
+	<property name="nant.settings.currentframework" value="net-2.0"/>
     <!-- find ilasm.exe -->
     <if test="${(not property::exists('ilasm')) and file::exists(path::combine(framework::get-framework-directory(framework::get-target-framework()), 'ilasm.exe'))}">
         <property name="ilasm" value="${path::combine(framework::get-framework-directory(framework::get-target-framework()), 'ilasm.exe')}" />

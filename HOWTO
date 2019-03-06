@@ -14,6 +14,7 @@ Download ICSharpCode.SharpZipLib.dll (from http://www.icsharpcode.net/opensource
 or from the ikvmbin-x.y.z.r.zip in the SourceForge IKVM project) and copy it to ikvm/bin.
 
 Add the bin directory of NAnt 0.85 and JDK 1.6 to the PATH.
+Make sure you run the build using Java 6.
 
 From the ikvm directory run "nant".
 
