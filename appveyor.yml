@@ -1,0 +1,20 @@
+branches:
+    only:
+    - v0.47
+version: 1.0.{build}
+os: Visual Studio 2013
+install:
+- choco install nant
+before_build:
+- refreshenv
+- set JAVA_HOME=C:\Program Files\Java\jdk1.6.0
+- set PATH=C:\Program Files\Java\jdk1.6.0\bin;%PATH%
+- ps: wget http://www.frijters.net/openjdk6-b22-stripped.zip -OutFile openjdk6-b22-stripped.zip
+- ps: Expand-Archive .\openjdk6-b22-stripped.zip -DestinationPath ..\
+build_script:
+- nant
+after_build:
+- nuget pack IKVM.0.47.0.1.nuspec
+artifacts:
+- path: IKVM.0.47.0.1.nupkg
+test: off
