@@ -32,6 +32,13 @@ From the ikvm directory run "nant native".
 Linux:
 Make sure you have gcc installed. From the ikvm directory run "nant native".
 
+Strong name Build
+-----------------
+
+If you want to do a strong named build, make sure you have a key container installed named
+"ikvm-key". Add the strong name tool in PATH, it is usually located in 
+"C:\Program Files (x86)\Microsoft SDKs\Windows\vXX.X\bin\NETFX X.X Tools". For installing
+a key in the container run "sn -i keyname.snk ikvm-key". Run the build with "nant signed".
 
 Additional Information
 ----------------------
@@ -43,6 +50,3 @@ method body (look for #if FIRST_PASS in the IKVM.Runtime.dll sources). The secon
 built after the IKVM.OpenJDK.*.dll assemblies have been built.
 
 The version numbers of the build is defined in ikvm/CommonAssemblyInfo.cs.
-
-If you want to do a strong named build, make sure you have a key container installed named
-"ikvm-key" and run the build with "nant signed".
