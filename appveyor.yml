@@ -9,7 +9,7 @@ os: Visual Studio 2013
 install:
 - choco install nant
 - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
-- ps: appveyor-tools\secure-file -decrypt C:\projects\ikvm\tools\ikvm-key.snk.enc -secret $env:decrypt_pass
+- ps: appveyor-tools\secure-file -decrypt C:\projects\ikvm\tools\ikvm-key.snk.enc -secret "$env:decrypt_pass"
 - set PATH=C:\Program Files (x86)\Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools;%PATH%
 - cmd: sn -i C:\projects\ikvm\tools\ikvm-key.snk ikvm-key
 before_build:
