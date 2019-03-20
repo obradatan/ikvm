@@ -1,6 +1,6 @@
 environment:
     decrypt_pass:
-     secure: /hNaHwPUcn1gqq2c39n0uWhvipHqm6t1yhDD8os2R0U2exfTEYl0ilOESKndvzCZ
+     secure: lK0NTOd98gxMkMDvj3IUWCAW/3vC8X8mqSlGGwQ16dH/yGg84/2zmuFzGG9W8R1w
 branches:
     only:
     - v0.47
