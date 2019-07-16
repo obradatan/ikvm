@@ -1,0 +1,6 @@
+.vs/
+.idea/
+openjdk/**/*.class
+/classpath/**/*.class
+bin/
+openjdk/*.dll
