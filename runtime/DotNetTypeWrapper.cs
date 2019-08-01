@@ -1481,7 +1481,7 @@ namespace IKVM.Internal
 #if STATIC_COMPILER
 						tb.__AddDeclarativeSecurity(MakeCustomAttributeBuilder(loader, annotation));
 #elif STUB_GENERATOR
-#else
+#elif !NETSTANDARD
 						SecurityAction action;
 						PermissionSet permSet;
 						if (MakeDeclSecurity(type, annotation, out action, out permSet))
@@ -1503,7 +1503,7 @@ namespace IKVM.Internal
 #if STATIC_COMPILER
 						cb.__AddDeclarativeSecurity(MakeCustomAttributeBuilder(loader, annotation));
 #elif STUB_GENERATOR
-#else
+#elif !NETSTANDARD
 						SecurityAction action;
 						PermissionSet permSet;
 						if (MakeDeclSecurity(type, annotation, out action, out permSet))
@@ -1525,7 +1525,7 @@ namespace IKVM.Internal
 #if STATIC_COMPILER
 						mb.__AddDeclarativeSecurity(MakeCustomAttributeBuilder(loader, annotation));
 #elif STUB_GENERATOR
-#else
+#elif !NETSTANDARD
 						SecurityAction action;
 						PermissionSet permSet;
 						if (MakeDeclSecurity(type, annotation, out action, out permSet))

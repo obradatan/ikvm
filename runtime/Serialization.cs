@@ -45,12 +45,16 @@ namespace IKVM.Internal
 		private static readonly TypeWrapper iobjectreference = ClassLoaderWrapper.GetWrapperFromType(JVM.Import(typeof(IObjectReference)));
 		private static readonly TypeWrapper serializable = ClassLoaderWrapper.LoadClassCritical("java.io.Serializable");
 		private static readonly TypeWrapper externalizable = ClassLoaderWrapper.LoadClassCritical("java.io.Externalizable");
+#if !NETSTANDARD
 		private static readonly PermissionSet psetSerializationFormatter;
+#endif
 
 		static Serialization()
 		{
+#if !NETSTANDARD
 			psetSerializationFormatter = new PermissionSet(PermissionState.None);
 			psetSerializationFormatter.AddPermission(new SecurityPermission(SecurityPermissionFlag.SerializationFormatter));
+#endif
 		}
 
 		private static bool IsSafeForAutomagicSerialization(TypeWrapper wrapper)
@@ -166,7 +170,9 @@ namespace IKVM.Internal
 				new Type[] { JVM.Import(typeof(SerializationInfo)), JVM.Import(typeof(StreamingContext)) });
 			getObjectData.SetCustomAttribute(securityCriticalAttribute);
 			AttributeHelper.HideFromJava(getObjectData);
+#if !NETSTANDARD
 			getObjectData.AddDeclarativeSecurity(SecurityAction.Demand, psetSerializationFormatter);
+#endif
 			tb.DefineMethodOverride(getObjectData, JVM.Import(typeof(ISerializable)).GetMethod("GetObjectData"));
 			CodeEmitter ilgen = CodeEmitter.Create(getObjectData);
 			ilgen.Emit(OpCodes.Ldarg_0);
@@ -183,7 +189,9 @@ namespace IKVM.Internal
 		{
 			ConstructorBuilder ctor = tb.DefineConstructor(MethodAttributes.Family, CallingConventions.Standard, new Type[] { JVM.Import(typeof(SerializationInfo)), JVM.Import(typeof(StreamingContext)) });
 			AttributeHelper.HideFromJava(ctor);
+#if !NETSTANDARD
 			ctor.AddDeclarativeSecurity(SecurityAction.Demand, psetSerializationFormatter);
+#endif
 			CodeEmitter ilgen = CodeEmitter.Create(ctor);
 			ilgen.Emit(OpCodes.Ldarg_0);
 			if (defaultConstructor != null)
