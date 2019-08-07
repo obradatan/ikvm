@@ -337,9 +337,14 @@ namespace IKVM.Internal
 
 		private static bool AtomicReferenceFieldUpdater_newUpdater(EmitIntrinsicContext eic)
 		{
+#if NETSTANDARD
+			throw new PlatformNotSupportedException();
+#else
 			return AtomicReferenceFieldUpdaterEmitter.Emit(eic.Context, eic.Caller.DeclaringType, eic.Emitter, eic.ClassFile, eic.OpcodeIndex, eic.Code, eic.Flags);
+#endif
 		}
 
+#if !NETSTANDARD
 		private static bool String_toCharArray(EmitIntrinsicContext eic)
 		{
 			if (eic.MatchRange(-1, 2)
@@ -409,6 +414,7 @@ namespace IKVM.Internal
 			ilgen.Emit(OpCodes.Ldtoken, fb);
 			ilgen.Emit(OpCodes.Call, JVM.Import(typeof(System.Runtime.CompilerServices.RuntimeHelpers)).GetMethod("InitializeArray", new Type[] { Types.Array, JVM.Import(typeof(RuntimeFieldHandle)) }));
 		}
+#endif
 
 		private static bool Reflection_getCallerClass(EmitIntrinsicContext eic)
 		{
@@ -506,6 +512,9 @@ namespace IKVM.Internal
 
 		private static bool ThreadLocal_new(EmitIntrinsicContext eic)
 		{
+#if NETSTANDARD
+			throw new PlatformNotSupportedException();
+#else
 			// it is only valid to replace a ThreadLocal instantiation by our ThreadStatic based version, if we can prove that the instantiation only happens once
 			// (which is the case when we're in <clinit> and there aren't any branches that lead to the current position)
 			if (eic.Caller.Name != StringConstants.CLINIT)
@@ -528,8 +537,10 @@ namespace IKVM.Internal
 			}
 			eic.Emitter.Emit(OpCodes.Newobj, DefineThreadLocalType(eic.Context, eic.OpcodeIndex, eic.Caller));
 			return true;
+#endif
 		}
 
+#if !NETSTANDARD
 		private static ConstructorBuilder DefineThreadLocalType(DynamicTypeWrapper.FinishContext context, int opcodeIndex, MethodWrapper caller)
 		{
 			TypeWrapper threadLocal = ClassLoaderWrapper.LoadClassCritical("ikvm.internal.IntrinsicThreadLocal");
@@ -560,5 +571,6 @@ namespace IKVM.Internal
 			});
 			return cb;
 		}
+#endif
 	}
 }

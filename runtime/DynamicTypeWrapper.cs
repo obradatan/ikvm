@@ -4156,6 +4156,9 @@ namespace IKVM.Internal
 				Profiler.Enter("TypeBuilder.CreateType");
 				try
 				{
+#if NETSTANDARD
+					throw new PlatformNotSupportedException();
+#else
 					type = typeBuilder.CreateType();
 					if (typeCallerID != null)
 					{
@@ -4168,6 +4171,7 @@ namespace IKVM.Internal
 							proc();
 						}
 					}
+#endif
 #if STATIC_COMPILER
 					if (tbFields != null)
 					{
@@ -4586,9 +4590,16 @@ namespace IKVM.Internal
 				{
 					AssemblyName name = new AssemblyName();
 					name.Name = "jniproxy";
-					AssemblyBuilder ab = AppDomain.CurrentDomain.DefineDynamicAssembly(name, JVM.IsSaveDebugImage ? AssemblyBuilderAccess.RunAndSave : AssemblyBuilderAccess.Run);
+					AssemblyBuilder ab =
+#if NETSTANDARD
+						AssemblyBuilder.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
+					mod = ab.DefineDynamicModule("jniproxy.dll");
+#else
+						AppDomain.CurrentDomain.DefineDynamicAssembly(name, JVM.IsSaveDebugImage ? AssemblyBuilderAccess.RunAndSave : AssemblyBuilderAccess.Run);
+
 					DynamicClassLoader.RegisterForSaveDebug(ab);
 					mod = ab.DefineDynamicModule("jniproxy.dll", "jniproxy.dll");
+#endif
 					CustomAttributeBuilder cab = new CustomAttributeBuilder(JVM.LoadType(typeof(JavaModuleAttribute)).GetConstructor(Type.EmptyTypes), new object[0]);
 					mod.SetCustomAttribute(cab);
 				}
@@ -4615,7 +4626,11 @@ namespace IKVM.Internal
 					CodeEmitter ilgen = CodeEmitter.Create(mb);
 					JniBuilder.Generate(context, ilgen, wrapper, mw, tb, classFile, m, args, true);
 					ilgen.DoEmit();
+#if NETSTANDARD
+					throw new PlatformNotSupportedException();
+#else
 					tb.CreateType();
+#endif
 					for (int i = 0; i < argTypes.Length - 1; i++)
 					{
 						ilGenerator.Emit(OpCodes.Ldarg, (short)i);
@@ -4630,6 +4645,8 @@ namespace IKVM.Internal
 				}
 			}
 #endif // !STATIC_COMPILER
+
+
 
 			private static class JniBuilder
 			{
@@ -5479,6 +5496,9 @@ namespace IKVM.Internal
 		private int GetMethodBaseToken(MethodBase mb)
 		{
 			ConstructorInfo ci = mb as ConstructorInfo;
+#if NETSTANDARD
+			return classLoader.GetTypeWrapperFactory().ModuleBuilder.MetadataToken;
+#else
 			if (ci != null)
 			{
 				return classLoader.GetTypeWrapperFactory().ModuleBuilder.GetConstructorToken(ci).Token;
@@ -5487,6 +5507,7 @@ namespace IKVM.Internal
 			{
 				return classLoader.GetTypeWrapperFactory().ModuleBuilder.GetMethodToken((MethodInfo)mb).Token;
 			}
+#endif
 		}
 
 		internal override int GetSourceLineNumber(MethodBase mb, int ilOffset)

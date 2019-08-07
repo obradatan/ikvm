@@ -22,6 +22,9 @@
                 <include name="../CommonAssemblyInfo.cs" />
                 <include name="Dummy.OpenJDK.Core.cs" />
             </sources>
+            <references>
+                <include name="netstandard.dll" />
+            </references>
         </csc>
     </target>
 
@@ -70,6 +73,7 @@
         <if test="${first-pass}">
             <property name="defs" value="${defs};FIRST_PASS" />
         </if>
+        <property name="defs" value="${defs};NETSTANDARD" />
         <if test="${not first-pass}">
             <!-- on Mono the C# compiler doesn't give an error if the vfs.zip resource is missing, so we have to check it here -->
             <if test="${not file::exists('../openjdk/vfs.zip')}">
@@ -137,8 +141,23 @@
                 <include if="${not first-pass}" name="../bin/IKVM.OpenJDK.Core.dll" asis="true" />
                 <include if="${not first-pass}" name="../bin/IKVM.OpenJDK.Util.dll" asis="true" />
                 <include if="${not first-pass}" name="../bin/IKVM.OpenJDK.Misc.dll" asis="true" />
-                <include name="${framework::get-assembly-directory(framework::get-target-framework())}/System.dll" />
-                <include name="${framework::get-assembly-directory(framework::get-target-framework())}/System.Configuration.dll" />
+                <include name="netstandard.dll" />
+                <include name="System.Reflection.dll" />
+                <include name="System.Runtime.dll" />
+                <include name="System.Reflection.Primitives.dll" />
+                <include name="System.Reflection.Primitives.dll" />
+
+                <!-- TODO: use a better root dir for sdk -->
+                <include name="C:\Program Files\dotnet\sdk\NuGetFallbackFolder\system.reflection.emit.ilgeneration\4.3.0\ref\netstandard1.0\System.Reflection.Emit.ILGeneration.dll" />
+                <include name="C:\Program Files\dotnet\sdk\NuGetFallbackFolder\system.security.permissions\4.5.0\ref\netstandard2.0\System.Security.Permissions.dll" />
+
+                <!-- TODO: restore packages & use csproj -->
+                <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\system.configuration.configurationmanager\4.5.0\ref\netstandard2.0\System.Configuration.ConfigurationManager.dll" />
+                <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\system.reflection.emit\4.3.0\ref\netstandard1.1\System.Reflection.dll" />
+                <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\system.reflection.emit\4.3.0\ref\netstandard1.1\System.Reflection.Emit.dll" />
+                <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\system.reflection.emit.lightweight\4.3.0\ref\netstandard1.0\System.Reflection.Emit.Lightweight.dll" />
+                <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\system.security.principal.windows\4.5.0\ref\netstandard2.0\System.Security.Principal.Windows.dll" />
+
             </references>
         </csc>
         <copy file="IKVM.Runtime.dll" todir="../bin" />

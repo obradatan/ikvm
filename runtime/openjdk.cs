@@ -286,7 +286,12 @@ static class DynamicMethodUtils
 			if (dynamicModule == null)
 			{
 				// we have to create a module that is security critical to hold the dynamic method, if we want to be able to emit unverifiable code
-				AssemblyBuilder ab = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("<DynamicMethodHolder>"), AssemblyBuilderAccess.RunAndCollect);
+				AssemblyBuilder ab =
+#if NETSTANDARD
+					AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("<DynamicMethodHolder>"), AssemblyBuilderAccess.RunAndCollect);
+#else
+					AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("<DynamicMethodHolder>"), AssemblyBuilderAccess.RunAndCollect);
+#endif
 				Interlocked.CompareExchange(ref dynamicModule, ab.DefineDynamicModule("<DynamicMethodHolder>"), null);
 			}
 			return new DynamicMethod(name, MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, returnType, paramTypes, dynamicModule, true);
@@ -449,11 +454,13 @@ namespace IKVM.NativeCode.java
 				{
 					return VirtualFileSystem.Open(name, fileMode, fileAccess);
 				}
+#if !NETSTANDARD
 				else if (fileMode == System.IO.FileMode.Append)
 				{
 					// this is the way to get atomic append behavior for all writes
 					return new System.IO.FileStream(name, fileMode, System.Security.AccessControl.FileSystemRights.AppendData, System.IO.FileShare.ReadWrite, 1, System.IO.FileOptions.None);
 				}
+#endif
 				else
 				{
 					return new System.IO.FileStream(name, fileMode, fileAccess, System.IO.FileShare.ReadWrite, 1, false);
@@ -4547,6 +4554,7 @@ namespace IKVM.NativeCode.java
 			}
 		}
 
+#if !NETSTANDARD
 		[System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.LinkDemand, UnmanagedCode = true)]
 		static class MappedByteBuffer
 		{
@@ -4612,6 +4620,7 @@ namespace IKVM.NativeCode.java
 			[System.Runtime.InteropServices.DllImport("ikvm-native")]
 		    private static extern int ikvm_msync(IntPtr address, int size);
 		}
+#endif
 	}
 
 	namespace security

@@ -22,6 +22,7 @@
   
 */
 
+#if !NETSTANDARD
 using System;
 using System.Collections.Generic;
 #if STATIC_COMPILER
@@ -166,3 +167,4 @@ static class AtomicReferenceFieldUpdaterEmitter
 		ilgen.DoEmit();
 	}
 }
+#endif

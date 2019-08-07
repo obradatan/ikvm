@@ -15,7 +15,7 @@
     <StartupObject />
     <FileUpgradeFlags />
     <UpgradeBackupLocation />
-    <TargetFramework>netstandard20</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ConfigurationOverrideFile />
     <NoWarn />
@@ -31,13 +31,20 @@
     <PostBuildEvent />
     <PreBuildEvent />
     <PostBuildEvent />
+    <Configurations>Debug;Release;Debug FIRST PASS</Configurations>
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent />
     <PostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;NET_4_0;CLASSGC</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET_4_0;CLASSGC;DEBUG;NETCOREAPP;NETCOREAPP3_0;NETSTANDARD;DEBUG;NETSTANDARD;NETSTANDARD2_0;DEBUG;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug FIRST PASS' ">
+    <DefineConstants>TRACE;DEBUG;NET_4_0;CLASSGC;DEBUG;NETCOREAPP;NETCOREAPP3_0;NETSTANDARD;DEBUG;NETSTANDARD;NETSTANDARD2_0;DEBUG;NETSTANDARD;NETSTANDARD2_0;DEBUG_FIRST_PASS;NETSTANDARD;NETSTANDARD2_0;FIRST_PASS</DefineConstants>
+    <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
+    <Optimize Condition=" '$(Optimize)' == '' ">false</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="IKVM.OpenJDK.Core">
@@ -55,8 +62,6 @@
     <Reference Include="IKVM.Runtime.JNI">
       <HintPath>IKVM.Runtime.JNI.dll</HintPath>
     </Reference>
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Management" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
@@ -69,6 +74,7 @@
     <Compile Remove="JniInterface.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
     <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>

@@ -48,7 +48,11 @@ namespace IKVM.Internal
 	
 		public static void SaveDebugImage()
 		{
+#if NETSTANDARD
+			throw new PlatformNotSupportedException();
+#else
 			DynamicClassLoader.SaveDebugImages();
+#endif
 		}
 
 #if !FIRST_PASS

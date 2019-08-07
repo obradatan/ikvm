@@ -332,11 +332,15 @@ namespace IKVM.Internal
 			}
 			if(unloadableContainer != null)
 			{
+#if NETSTANDARD
+				throw new PlatformNotSupportedException();
+#else
 				unloadableContainer.CreateType();
 				foreach(TypeBuilder tb in unloadables.Values)
 				{
 					tb.CreateType();
 				}
+#endif
 			}
 #if STATIC_COMPILER
 			if(proxyHelperContainer != null)
@@ -350,7 +354,7 @@ namespace IKVM.Internal
 #endif // STATIC_COMPILER
 		}
 
-#if !STATIC_COMPILER
+#if !STATIC_COMPILER && !NETSTANDARD
 		internal static void SaveDebugImages()
 		{
 			JVM.FinishingForDebugSave = true;
@@ -429,7 +433,11 @@ namespace IKVM.Internal
 			AssemblyBuilderAccess access;
 			if(JVM.IsSaveDebugImage)
 			{
+#if NETSTANDARD
+				throw new PlatformNotSupportedException();
+#else
 				access = AssemblyBuilderAccess.RunAndSave;
+#endif
 			}
 #if CLASSGC
 			else if(JVM.classUnloading
@@ -450,7 +458,9 @@ namespace IKVM.Internal
 			}
 #endif
 			AssemblyBuilder assemblyBuilder =
-#if NET_4_0
+#if NETSTANDARD
+				AssemblyBuilder.DefineDynamicAssembly(name, access, attribs);
+#elif NET_4_0
 				AppDomain.CurrentDomain.DefineDynamicAssembly(name, access, null, true, attribs);
 #else
 				AppDomain.CurrentDomain.DefineDynamicAssembly(name, access, null, null, null, null, null, true, attribs);
@@ -459,7 +469,12 @@ namespace IKVM.Internal
 			bool debug = JVM.EmitSymbols;
 			CustomAttributeBuilder debugAttr = new CustomAttributeBuilder(typeof(DebuggableAttribute).GetConstructor(new Type[] { typeof(bool), typeof(bool) }), new object[] { true, debug });
 			assemblyBuilder.SetCustomAttribute(debugAttr);
-			ModuleBuilder moduleBuilder = JVM.IsSaveDebugImage ? assemblyBuilder.DefineDynamicModule(name.Name, name.Name + ".dll", debug) : assemblyBuilder.DefineDynamicModule(name.Name, debug);
+			ModuleBuilder moduleBuilder =
+#if NETSTANDARD
+				assemblyBuilder.DefineDynamicModule(name.Name);
+#else
+				JVM.IsSaveDebugImage ? assemblyBuilder.DefineDynamicModule(name.Name, name.Name + ".dll", debug) : assemblyBuilder.DefineDynamicModule(name.Name, debug);
+#endif
 			moduleBuilder.SetCustomAttribute(new CustomAttributeBuilder(typeof(IKVM.Attributes.JavaModuleAttribute).GetConstructor(Type.EmptyTypes), new object[0]));
 			return moduleBuilder;
 		}

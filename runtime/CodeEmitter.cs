@@ -90,7 +90,11 @@ namespace IKVM.Internal
 			local = ilgen.DeclareLocal(type);
 			if (name != null)
 			{
+#if NETSTANDARD
+				throw new PlatformNotSupportedException();
+#else
 				local.SetLocalSymInfo(name);
+#endif
 			}
 		}
 	}
@@ -478,11 +482,13 @@ namespace IKVM.Internal
 					break;
 				case CodeType.ReleaseTempLocal:
 					break;
+#if !NETSTANDARD
 				case CodeType.SequencePoint:
 					ilgen_real.MarkSequencePoint(symbols, (int)data, 0, (int)data + 1, 0);
 					// we emit a nop to make sure we always have an instruction associated with the sequence point
 					ilgen_real.Emit(OpCodes.Nop);
 					break;
+#endif
 				case CodeType.Label:
 					ilgen_real.MarkLabel(((CodeEmitterLabel)data).Label);
 					break;
@@ -595,7 +601,11 @@ namespace IKVM.Internal
 			else if (arg is CalliWrapper)
 			{
 				CalliWrapper args = (CalliWrapper)arg;
+#if NETSTANDARD
+				ilgen_real.EmitCalli(opcode, CallingConventions.Any, args.returnType, args.parameterTypes, new Type[0]);
+#else
 				ilgen_real.EmitCalli(opcode, args.unmanagedCallConv, args.returnType, args.parameterTypes);
+#endif
 			}
 			else
 			{
@@ -1842,7 +1852,11 @@ namespace IKVM.Internal
 
 		internal void DefineSymbolDocument(ModuleBuilder module, string url, Guid language, Guid languageVendor, Guid documentType)
 		{
+#if NETSTANDARD
+			throw new PlatformNotSupportedException();
+#else
 			symbols = module.DefineDocument(url, language, languageVendor, documentType);
+#endif
 		}
 
 		internal CodeEmitterLocal UnsafeAllocTempLocal(Type type)

@@ -1721,7 +1721,9 @@ namespace IKVM.Internal
 		{
 			// these are the types that may not be used as a type argument when instantiating a generic type
 			return type == Types.Void
+#if !NETSTANDARD
 				|| type == JVM.Import(typeof(ArgIterator))
+#endif
 				|| type == JVM.Import(typeof(RuntimeArgumentHandle))
 				|| type == JVM.Import(typeof(TypedReference))
 				|| type.ContainsGenericParameters
