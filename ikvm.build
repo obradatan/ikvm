@@ -13,7 +13,7 @@
     <target name="managed" depends="clean-managed CommonAssemblyInfo">
         <nant buildfile="tools/tools.build" />
         <nant buildfile="runtime/runtime.build" target="first-pass" />
-        <nant buildfile="awt/awt.build" target="first-pass" />
+        <!-- <nant buildfile="awt/awt.build" target="first-pass" /> -->
         <nant buildfile="reflect/reflect.build" />
         <nant buildfile="ikvmc/ikvmc.build" />
         <nant buildfile="ikvmstub/ikvmstub.build" />
