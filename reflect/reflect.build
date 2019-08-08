@@ -108,6 +108,12 @@
             </sources>
             <references>
                 <include if="${framework::exists('mono-2.0')}" name="${MonoSymbolWriter}" />
+                <include name="netstandard.dll" />
+                <include name="System.Reflection.dll" />
+                <include name="System.Runtime.dll" />
+                <include name="System.Reflection.Primitives.dll" />
+                <!-- TODO: use a better root dir for sdk -->
+                <include name="C:\Program Files\dotnet\sdk\NuGetFallbackFolder\system.security.permissions\4.5.0\ref\netstandard2.0\System.Security.Permissions.dll" />
             </references>
         </csc>
     </target>

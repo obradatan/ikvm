@@ -145,7 +145,6 @@
                 <include name="System.Reflection.dll" />
                 <include name="System.Runtime.dll" />
                 <include name="System.Reflection.Primitives.dll" />
-                <include name="System.Reflection.Primitives.dll" />
 
                 <!-- TODO: use a better root dir for sdk -->
                 <include name="C:\Program Files\dotnet\sdk\NuGetFallbackFolder\system.reflection.emit.ilgeneration\4.3.0\ref\netstandard1.0\System.Reflection.Emit.ILGeneration.dll" />
