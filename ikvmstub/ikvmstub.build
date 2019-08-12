@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <project name="ikvmstub" default="ikvmstub">
+    <property name="nant.settings.currentframework" value="net-4.6.1"/>
     <target name="ikvmstub">
         <property name="defs" value="STUB_GENERATOR;TRACE" />
         <if test="${property::exists('signed')}">
@@ -30,6 +31,9 @@
             <references>
                 <include name="../bin/ICSharpCode.SharpZipLib.dll" asis="true" />
                 <include name="../bin/IKVM.Reflection.dll" asis="true" />
+                <include name="netstandard.dll" asis="true" />
+                <!-- TODO: restore packages -->
+                <include name="../packages/System.Security.Permissions.4.5.0\lib\net461\System.Security.Permissions.dll" asis="true" />
             </references>
         </csc>
     </target>

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <project name="ikvmc" default="ikvmc">
+    <property name="nant.settings.currentframework" value="net-4.6.1"/>
     <target name="ikvmc">
         <property name="defs" value="TRACE;STATIC_COMPILER" />
         <if test="${property::exists('signed')}">
@@ -49,6 +50,9 @@
             <references>
                 <include name="../bin/ICSharpCode.SharpZipLib.dll" asis="true" />
                 <include name="../bin/IKVM.Reflection.dll" asis="true" />
+                <include name="netstandard.dll" asis="true" />
+                <!-- TODO: restore packages -->
+                <include name="../packages/System.Security.Permissions.4.5.0\lib\net461\System.Security.Permissions.dll" asis="true" />
                 <!-- HACK mcs requires an explicit reference to System.Configuration -->
                 <include name="${framework::get-assembly-directory(framework::get-target-framework())}/System.Configuration.dll" />
             </references>
