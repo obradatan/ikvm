@@ -1892,7 +1892,10 @@ class Thread implements Runnable {
                     }
                     cli.System.Diagnostics.StackTrace stack;
                     try {
-                        stack = new cli.System.Diagnostics.StackTrace(nativeThread, true);
+                        // This ctor is obsolete and shouldn't be used
+                        // https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.stacktrace.-ctor?view=netframework-4.8#System_Diagnostics_StackTrace__ctor_System_Threading_Thread_System_Boolean_
+                        // stack = new cli.System.Diagnostics.StackTrace(nativeThread, true);
+                        stack = new cli.System.Diagnostics.StackTrace(true);
                     }
                     finally {
                         if (suspended) {

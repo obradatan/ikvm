@@ -273,23 +273,24 @@ public class JdbcOdbcUtils{
         if(th instanceof SQLException){
             return (SQLException)th;
         }
-        if(th instanceof OdbcException){
-            SQLException sqlEx = null;
-            OdbcErrorCollection errors = ((OdbcException)th).get_Errors();
-            for(int e = 0; e < errors.get_Count(); e++){
-                OdbcError err = errors.get_Item(e);
-                SQLException newEx = new SQLException(err.get_Message(), err.get_SQLState(), err.get_NativeError());
-                if(sqlEx == null){
-                    sqlEx = newEx;
-                }else{
-                    sqlEx.setNextException(newEx);
-                }
-            }
-            if(sqlEx != null){
-                sqlEx.initCause(th);
-                return sqlEx;
-            }
-        }
+        //TODO: not supported in .NET standard
+        // if(th instanceof OdbcException){
+        //     SQLException sqlEx = null;
+        //     OdbcErrorCollection errors = ((OdbcException)th).get_Errors();
+        //     for(int e = 0; e < errors.get_Count(); e++){
+        //         OdbcError err = errors.get_Item(e);
+        //         SQLException newEx = new SQLException(err.get_Message(), err.get_SQLState(), err.get_NativeError());
+        //         if(sqlEx == null){
+        //             sqlEx = newEx;
+        //         }else{
+        //             sqlEx.setNextException(newEx);
+        //         }
+        //     }
+        //     if(sqlEx != null){
+        //         sqlEx.initCause(th);
+        //         return sqlEx;
+        //     }
+        // }
         if(th instanceof DbException){
             DbException dbEx = (DbException)th;
             return new SQLException(dbEx.get_Message(), "S1000", dbEx.get_ErrorCode(), th);
