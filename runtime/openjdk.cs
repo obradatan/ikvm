@@ -4554,7 +4554,6 @@ namespace IKVM.NativeCode.java
 			}
 		}
 
-#if !NETSTANDARD
 		[System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.LinkDemand, UnmanagedCode = true)]
 		static class MappedByteBuffer
 		{
@@ -4620,7 +4619,6 @@ namespace IKVM.NativeCode.java
 			[System.Runtime.InteropServices.DllImport("ikvm-native")]
 		    private static extern int ikvm_msync(IntPtr address, int size);
 		}
-#endif
 	}
 
 	namespace security
