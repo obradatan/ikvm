@@ -4766,7 +4766,6 @@ namespace IKVM.NativeCode.java
 				}
 			}
 
-#if !NETSTANDARD
 			static class WindowsPreferences
 			{
 				// HACK we currently support only 16 handles at a time
@@ -5041,7 +5040,6 @@ namespace IKVM.NativeCode.java
 					}
 				}
 			}
-#endif
 
             internal static class UACVirtualization {
                 private enum TOKEN_INFORMATION_CLASS {

@@ -156,6 +156,7 @@
                 <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\system.reflection.emit\4.3.0\ref\netstandard1.1\System.Reflection.Emit.dll" />
                 <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\system.reflection.emit.lightweight\4.3.0\ref\netstandard1.0\System.Reflection.Emit.Lightweight.dll" />
                 <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\system.security.principal.windows\4.5.0\ref\netstandard2.0\System.Security.Principal.Windows.dll" />
+                <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\microsoft.win32.registry\4.5.0\ref\netstandard2.0\Microsoft.Win32.Registry.dll" />
 
             </references>
         </csc>
