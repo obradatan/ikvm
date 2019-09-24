@@ -146,21 +146,25 @@
                 <include name="System.Runtime.dll" />
                 <include name="System.Reflection.Primitives.dll" />
 
-                <!-- TODO: use a better root dir for sdk -->
-                <include name="C:\Program Files\dotnet\sdk\NuGetFallbackFolder\system.reflection.emit.ilgeneration\4.3.0\ref\netstandard1.0\System.Reflection.Emit.ILGeneration.dll" />
-                <include name="C:\Program Files\dotnet\sdk\NuGetFallbackFolder\system.security.permissions\4.5.0\ref\netstandard2.0\System.Security.Permissions.dll" />
-
                 <!-- TODO: restore packages & use csproj -->
-                <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\system.configuration.configurationmanager\4.5.0\ref\netstandard2.0\System.Configuration.ConfigurationManager.dll" />
-                <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\system.reflection.emit\4.3.0\ref\netstandard1.1\System.Reflection.dll" />
-                <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\system.reflection.emit\4.3.0\ref\netstandard1.1\System.Reflection.Emit.dll" />
-                <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\system.reflection.emit.lightweight\4.3.0\ref\netstandard1.0\System.Reflection.Emit.Lightweight.dll" />
-                <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\system.security.principal.windows\4.5.0\ref\netstandard2.0\System.Security.Principal.Windows.dll" />
-                <include name="${environment::get-variable('USERPROFILE')}\.nuget\packages\microsoft.win32.registry\4.5.0\ref\netstandard2.0\Microsoft.Win32.Registry.dll" />
+                <include name="..\packages\microsoft.win32.registry.4.5.0\ref\netstandard2.0\Microsoft.Win32.Registry.dll" />
+                <include name="..\packages\system.configuration.configurationmanager.4.5.0\ref\netstandard2.0\System.Configuration.ConfigurationManager.dll" />
+                <include name="..\packages\system.reflection.emit.4.3.0\ref\netstandard1.1\System.Reflection.Emit.dll" />
+                <include name="..\packages\system.reflection.emit.ilgeneration.4.3.0\ref\netstandard1.0\System.Reflection.Emit.ILGeneration.dll" />
+                <include name="..\packages\system.reflection.emit.lightweight.4.3.0\ref\netstandard1.0\System.Reflection.Emit.Lightweight.dll" />
+                <include name="..\packages\system.security.permissions.4.5.0\ref\netstandard2.0\System.Security.Permissions.dll" />
+                <include name="..\packages\system.security.principal.windows.4.5.0\ref\netstandard2.0\System.Security.Principal.Windows.dll" />
 
             </references>
         </csc>
         <copy file="IKVM.Runtime.dll" todir="../bin" />
+        <copy file="..\packages\microsoft.win32.registry.4.5.0\ref\netstandard2.0\Microsoft.Win32.Registry.dll" todir="../bin" />
+        <copy file="..\packages\system.configuration.configurationmanager.4.5.0\ref\netstandard2.0\System.Configuration.ConfigurationManager.dll" todir="../bin" />
+        <copy file="..\packages\system.reflection.emit.4.3.0\ref\netstandard1.1\System.Reflection.Emit.dll" todir="../bin" />
+        <copy file="..\packages\system.reflection.emit.ilgeneration.4.3.0\ref\netstandard1.0\System.Reflection.Emit.ILGeneration.dll" todir="../bin" />
+        <copy file="..\packages\system.reflection.emit.lightweight.4.3.0\ref\netstandard1.0\System.Reflection.Emit.Lightweight.dll" todir="../bin" />
+        <copy file="..\packages\system.security.permissions.4.5.0\ref\netstandard2.0\System.Security.Permissions.dll" todir="../bin" />
+        <copy file="..\packages\system.security.principal.windows.4.5.0\ref\netstandard2.0\System.Security.Principal.Windows.dll" todir="../bin" />
         <if test="${not first-pass}">
             <if test="${property::exists('peverify')}">
                 <exec program="${peverify}" commandline="-nologo ../bin/IKVM.Runtime.dll" />
