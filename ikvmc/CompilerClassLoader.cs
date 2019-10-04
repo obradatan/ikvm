@@ -541,6 +541,11 @@ namespace IKVM.Internal
 
 			AddJavaModuleAttribute(mb);
 
+			if (StaticCompiler.Universe.IsTargettingNetStandard)
+			{
+				AttributeHelper.SetTargetFrameworkAttribute(assemblyBuilder, ".NETStandard,Version=v2.0");
+			}
+
 			// add a package list and export map
 			if(options.sharedclassloader == null || options.sharedclassloader[0] == this)
 			{
@@ -3278,7 +3283,9 @@ namespace IKVM.Internal
 		internal bool guessFileKind;
 		internal Dictionary<string, byte[]> classes;
 		internal string[] unresolvedReferences;	// only used during command line parsing
+		internal string[] unresolvedNetStandardReferences;	// only used during command line parsing
 		internal Assembly[] references;
+		internal Assembly[] netStandardReferences;
 		internal string[] peerReferences;
 		internal bool crossReferenceAllPeers = true;
 		internal Dictionary<string, List<ResourceItem>> resources;
@@ -3301,6 +3308,7 @@ namespace IKVM.Internal
 		internal Dictionary<string, string> suppressWarnings = new Dictionary<string, string>();
 		internal Dictionary<string, string> errorWarnings = new Dictionary<string, string>();
 		internal string writeSuppressWarningsFile;
+		internal bool IsTargettingNetStandard;
 
 		internal CompilerOptions Copy()
 		{

@@ -35,3 +35,7 @@ using System.Reflection;
 	#pragma warning disable 1699
 	[assembly: AssemblyKeyName("ikvm-key")]
 #endif
+
+#if NETSTANDARD
+[assembly: global::System.Runtime.Versioning.TargetFrameworkAttribute(".NETStandard,Version=v2.0", FrameworkDisplayName = "")]
+#endif

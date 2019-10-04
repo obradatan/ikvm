@@ -57,5 +57,6 @@
                 <include name="${framework::get-assembly-directory(framework::get-target-framework())}/System.Configuration.dll" />
             </references>
         </csc>
+        <copy file="..\packages\system.security.permissions.4.5.0\lib\net461\System.Security.Permissions.dll" todir="../bin" />
     </target>
 </project>

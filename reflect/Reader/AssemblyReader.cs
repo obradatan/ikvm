@@ -251,5 +251,10 @@ namespace IKVM.Reflection.Reader
 		{
 			return manifestModule.GetCustomAttributes(0x20000001, attributeType);
 		}
+
+		public override string ToString()
+		{
+			return FullName;
+		}
 	}
 }

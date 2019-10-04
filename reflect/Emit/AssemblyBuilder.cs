@@ -639,6 +639,11 @@ namespace IKVM.Reflection.Emit
 			}
 			return list;
 		}
+
+		public override string ToString()
+		{
+			return FullName;
+		}
 	}
 
 	sealed class ManifestModule : Module

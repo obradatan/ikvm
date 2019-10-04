@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using System.Diagnostics.SymbolStore;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -622,7 +623,35 @@ namespace IKVM.Reflection.Emit
 					}
 					else
 					{
-						rec.ResolutionScope = ImportAssemblyRef(type.Assembly);
+						var typeName = TypeName.Split(TypeNameParser.Unescape(type.FullName));
+						var assembly = type.Assembly;
+						var typeDefinitions = universe.assemblies.Select(a => (a, a.ManifestModule.FindType(typeName)))
+							.Where(t => t.Item2.Item1 != null);
+
+						bool isNetStandardAssembly(Assembly asm)
+						{
+							return asm.FullName.StartsWith("IKVM") ||
+							       universe.netStandardAssemblies.Any(a => a.FullName == asm.FullName);
+						}
+
+						if (!isNetStandardAssembly(type.Assembly))
+						{
+							var oldAssembly = assembly;
+
+							var tuple = typeDefinitions.FirstOrDefault(td => isNetStandardAssembly(td.a));
+							if (tuple.a != null)
+							{
+								assembly = tuple.a;
+
+								Console.WriteLine($"{oldAssembly.FullName} -> {assembly}");
+							}
+							else
+							{
+								Console.WriteLine($"Error fetching {type.FullName} from {type.Assembly.FullName}");
+							}
+						}
+
+						rec.ResolutionScope = ImportAssemblyRef(assembly);
 					}
 					rec.TypeName = this.Strings.Add(type.__Name);
 					string ns = type.__Namespace;
@@ -678,6 +707,15 @@ namespace IKVM.Reflection.Emit
 
 		private int FindOrAddAssemblyRef(AssemblyName name)
 		{
+//			if (universe.IsTargettingNetStandard)
+//			{
+//				//Redirect to .net standard
+//				if (name.Name == "mscorlib" || name.Name == "System" || name.Name == "System.Data")
+//				{
+//					name = asm.universe.GetAssemblies().First(a => a.GetName().Name == "netstandard").GetName();
+//				}
+//			}
+
 			AssemblyRefTable.Record rec = new AssemblyRefTable.Record();
 			Version ver = name.Version;
 			rec.MajorVersion = (ushort)ver.Major;

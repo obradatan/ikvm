@@ -113,6 +113,8 @@ class IkvmcCompiler
 		int rc = comp.ParseCommandLine(argList.GetEnumerator(), targets, toplevel);
 		if (rc == 0)
 		{
+			//TODO: Ugly
+			StaticCompiler.Universe.IsTargettingNetStandard = true;
 			resolver.Warning += new AssemblyResolver.WarningEvent(loader_Warning);
 			resolver.Init(StaticCompiler.Universe, nostdlib, toplevel.unresolvedReferences, libpaths);
 		}
@@ -344,6 +346,7 @@ class IkvmcCompiler
 		Console.Error.WriteLine("    -nostdlib                  Do not reference standard libraries");
 		Console.Error.WriteLine("    -lib:<dir>                 Additional directories to search for references");
 		Console.Error.WriteLine("    -noautoserialization       Disable automatic .NET serialization support");
+		Console.Error.WriteLine("    -netstandard       		Generate .NET Standard libraries");
 	}
 
 	int ParseCommandLine(IEnumerator<string> arglist, List<CompilerOptions> targets, CompilerOptions options)
@@ -505,6 +508,10 @@ class IkvmcCompiler
 				{
 					options.codegenoptions |= CodeGenOptions.RemoveAsserts;
 				}
+				else if(s == "-netstandard")
+				{
+					options.IsTargettingNetStandard = true;
+				}
 				else if(s.StartsWith("-main:"))
 				{
 					options.mainClass = s.Substring(6);
@@ -518,6 +525,16 @@ class IkvmcCompiler
 						return 1;
 					}
 					ArrayAppend(ref options.unresolvedReferences, r);
+				}
+				else if(s.StartsWith("-referencenetstandard:") || s.StartsWith("-rt:"))
+				{
+					string r = s.Substring(s.IndexOf(':') + 1);
+					if(r == "")
+					{
+						Console.Error.WriteLine("Error: missing file specification for '{0}' option", s);
+						return 1;
+					}
+					ArrayAppend(ref options.unresolvedNetStandardReferences, r);
 				}
 				else if(s.StartsWith("-recurse:"))
 				{
@@ -950,6 +967,26 @@ class IkvmcCompiler
 						return rc;
 					}
 				next_reference: ;
+				}
+			}
+			if (target.unresolvedNetStandardReferences != null)
+			{
+				foreach (string reference in target.unresolvedNetStandardReferences)
+				{
+					foreach (CompilerOptions peer in targets)
+					{
+						if (peer.assembly.Equals(reference, StringComparison.InvariantCultureIgnoreCase))
+						{
+							ArrayAppend(ref target.peerReferences, peer.assembly);
+							goto next_reference;
+						}
+					}
+					int rc = resolver.ResolveReference(cache, ref target.references, reference, true);
+					if (rc != 0)
+					{
+						return rc;
+					}
+					next_reference: ;
 				}
 			}
 		}

@@ -80,7 +80,8 @@ namespace IKVM.Reflection
 	public sealed class Universe : IDisposable
 	{
 		internal readonly Dictionary<Type, Type> canonicalizedTypes = new Dictionary<Type, Type>();
-		private readonly List<Assembly> assemblies = new List<Assembly>();
+		public readonly List<Assembly> assemblies = new List<Assembly>();
+		public readonly ISet<Assembly> netStandardAssemblies = new HashSet<Assembly>();
 		private readonly List<AssemblyBuilder> dynamicAssemblies = new List<AssemblyBuilder>();
 		private readonly Dictionary<string, Assembly> assembliesByName = new Dictionary<string, Assembly>();
 		private readonly Dictionary<System.Type, Type> importedTypes = new Dictionary<System.Type, Type>();
@@ -143,6 +144,8 @@ namespace IKVM.Reflection
 		private Type typeof_System_Security_Permissions_PermissionSetAttribute;
 		private Type typeof_System_Security_Permissions_SecurityAction;
 		private List<ResolveEventHandler> resolvers = new List<ResolveEventHandler>();
+
+		public bool IsTargettingNetStandard { get; set; }
 
 		internal Assembly Mscorlib
 		{

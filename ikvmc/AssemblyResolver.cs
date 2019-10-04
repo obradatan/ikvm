@@ -182,7 +182,7 @@ namespace IKVM.Internal
 			return null;
 		}
 
-		internal int ResolveReference(Dictionary<string, Assembly> cache, ref Assembly[] references, string reference)
+		internal int ResolveReference(Dictionary<string, Assembly> cache, ref Assembly[] references, string reference, bool isNetStandard = false)
 		{
 			string[] files = new string[0];
 			try
@@ -205,6 +205,11 @@ namespace IKVM.Internal
 					foreach (string found in FindAssemblyPath(reference))
 					{
 						asm = LoadFile(found);
+						if (isNetStandard)
+						{
+							universe.netStandardAssemblies.Add(asm);
+						}
+
 						cache.Add(reference, asm);
 						break;
 					}
@@ -224,6 +229,10 @@ namespace IKVM.Internal
 					if (!cache.TryGetValue(file, out asm))
 					{
 						asm = LoadFile(file);
+						if (isNetStandard)
+						{
+							universe.netStandardAssemblies.Add(asm);
+						}
 					}
 					ArrayAppend(ref references, asm);
 				}

@@ -1246,6 +1246,12 @@ namespace IKVM.Internal
 				new PropertyInfo[] { runtimeCompatibilityAttribute.GetProperty("WrapNonExceptionThrows") }, new object[] { true },
 				new FieldInfo[0], new object[0]));
 		}
+
+		internal static void SetTargetFrameworkAttribute(AssemblyBuilder assemblyBuilder, string name)
+		{
+			ConstructorInfo remappedClassAttribute = JVM.Import(typeof(System.Runtime.Versioning.TargetFrameworkAttribute)).GetConstructor(new[] { Types.String });
+			assemblyBuilder.SetCustomAttribute(new CustomAttributeBuilder(remappedClassAttribute, new object[] { name }));
+		}
 	}
 
 	static class EnumHelper

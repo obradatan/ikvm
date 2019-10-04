@@ -8,6 +8,12 @@
     <AssemblyTitle>IKVM.NET Reflection</AssemblyTitle>
     <Description>Managed (partial) Reflection implementation for use by ikvmc</Description>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>DEBUG;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>RELEASE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Security.Permissions" Version="4.5.0" />
   </ItemGroup>
