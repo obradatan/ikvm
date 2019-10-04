@@ -19,7 +19,7 @@
 
   Jeroen Frijters
   jeroen@frijters.net
-  
+
 */
 
 using System;
@@ -49,7 +49,13 @@ class DependencyChecker
 				deps.Add(dep, new List<string>());
 			}
 		}
-		List<string> whitelist = new List<string>(new string[] { "mscorlib", "System", "IKVM.Runtime", "IKVM.OpenJDK.Core" });
+		List<string> whitelist = new List<string>(new string[] { "IKVM.Runtime", "IKVM.OpenJDK.Core" });
+		if (args.Length > 2 && "netstandard".Equals(args[2], StringComparison.CurrentCultureIgnoreCase)) {
+			whitelist.Add("netstandard");
+		} else {
+			whitelist.AddRange(new[] { "mscorlib", "System" });
+		}
+
 		bool fail = false;
 		foreach (string line in File.ReadAllLines(args[0]))
 		{

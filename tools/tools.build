@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <project name="tools" default="tools">
+    <property name="nant.settings.currentframework" value="net-4.6.1"/>
     <target name="tools">
         <csc target="exe" output="asmref.exe" optimize="true">
             <sources>
