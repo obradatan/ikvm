@@ -395,13 +395,13 @@ namespace IKVM.Reflection.Reader
 									{
 										throw new NotImplementedException("self reference scope?");
 									}
-									typeRefs[index] = FindType(GetTypeName(TypeRef.records[index].TypeNameSpace, TypeRef.records[index].TypeName));
+									typeRefs[index] = FindType(GetTypeName(TypeRef.records[index].TypeNameSpace, TypeRef.records[index].TypeName)).Item1;
 									break;
 								case ModuleRefTable.Index:
 									{
 										Module module = ResolveModuleRef(ModuleRef.records[(scope & 0xFFFFFF) - 1]);
 										TypeName typeName = GetTypeName(TypeRef.records[index].TypeNameSpace, TypeRef.records[index].TypeName);
-										Type type = module.FindType(typeName);
+										var (type, _) = module.FindType(typeName);
 										if (type == null)
 										{
 											throw new TypeLoadException(String.Format("Type '{0}' not found in module '{1}'", typeName, module.Name));
@@ -567,7 +567,7 @@ namespace IKVM.Reflection.Reader
 			get { return assembly; }
 		}
 
-		internal override Type FindType(TypeName typeName)
+		internal override (Type, bool? isForwarded) FindType(TypeName typeName)
 		{
 			PopulateTypeDef();
 			Type type;
@@ -576,10 +576,10 @@ namespace IKVM.Reflection.Reader
 				LazyForwardedType fw;
 				if (forwardedTypes.TryGetValue(typeName, out fw))
 				{
-					return fw.GetType(this, typeName);
+					return (fw.GetType(this, typeName), true);
 				}
 			}
-			return type;
+			return (type, false);
 		}
 
 		public override MemberInfo ResolveMember(int metadataToken, Type[] genericTypeArguments, Type[] genericMethodArguments)

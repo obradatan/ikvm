@@ -429,16 +429,16 @@ namespace IKVM.Reflection.Emit
 			get { return asm; }
 		}
 
-		internal override Type FindType(TypeName name)
+		internal override (Type, bool? isForwarded) FindType(TypeName name)
 		{
 			foreach (Type type in types)
 			{
 				if (type.__Namespace == name.Namespace && type.__Name == name.Name)
 				{
-					return type;
+					return (type, null);
 				}
 			}
-			return null;
+			return (null, null);
 		}
 
 		internal override void GetTypesImpl(List<Type> list)

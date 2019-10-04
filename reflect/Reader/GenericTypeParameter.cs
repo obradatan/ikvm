@@ -126,7 +126,7 @@ namespace IKVM.Reflection.Reader
 				get { throw new InvalidOperationException(); }
 			}
 
-			internal override Type FindType(TypeName typeName)
+			internal override (Type, bool? isForwarded) FindType(TypeName typeName)
 			{
 				throw new InvalidOperationException();
 			}

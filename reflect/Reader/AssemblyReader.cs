@@ -103,12 +103,12 @@ namespace IKVM.Reflection.Reader
 
 		internal override Type FindType(TypeName typeName)
 		{
-			Type type = manifestModule.FindType(typeName);
+			var (type, _) = manifestModule.FindType(typeName);
 			for (int i = 0; type == null && i < externalModules.Length; i++)
 			{
 				if ((manifestModule.File.records[i].Flags & ContainsNoMetaData) == 0)
 				{
-					type = GetModule(i).FindType(typeName);
+					type = GetModule(i).FindType(typeName).Item1;
 				}
 			}
 			return type;

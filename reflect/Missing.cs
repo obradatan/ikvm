@@ -264,9 +264,9 @@ namespace IKVM.Reflection
 			get { throw new MissingModuleException(this); }
 		}
 
-		internal override Type FindType(TypeName typeName)
+		internal override (Type, bool? isForwarded) FindType(TypeName typeName)
 		{
-			return null;
+			return (null, null);
 		}
 
 		internal override void GetTypesImpl(System.Collections.Generic.List<Type> list)

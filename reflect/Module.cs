@@ -299,7 +299,7 @@ namespace IKVM.Reflection
 
 		internal abstract void GetTypesImpl(List<Type> list);
 
-		internal abstract Type FindType(TypeName name);
+		internal abstract (Type, bool? isForwarded) FindType(TypeName name);
 
 		public Type GetType(string className)
 		{
@@ -333,7 +333,7 @@ namespace IKVM.Reflection
 					return null;
 				}
 			}
-			Type type = FindType(TypeName.Split(TypeNameParser.Unescape(parser.FirstNamePart)));
+			var (type, _) = FindType(TypeName.Split(TypeNameParser.Unescape(parser.FirstNamePart)));
 			if (type == null && __IsMissing)
 			{
 				throw new MissingModuleException((MissingModule)this);

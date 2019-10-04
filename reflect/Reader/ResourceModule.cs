@@ -110,9 +110,9 @@ namespace IKVM.Reflection.Reader
 			throw new NotSupportedException();
 		}
 
-		internal override Type FindType(TypeName typeName)
+		internal override (Type, bool? isForwarded) FindType(TypeName typeName)
 		{
-			return null;
+			return (null, null);
 		}
 
 		internal override void GetTypesImpl(List<Type> list)
