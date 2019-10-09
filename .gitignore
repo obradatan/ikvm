@@ -28,3 +28,4 @@ obj/
 /tools/pubkey.txt
 /bin-x86/JVM.DLL
 /bin-x64/JVM.DLL
+/runtime/IKVM.Runtime.JNI.dll

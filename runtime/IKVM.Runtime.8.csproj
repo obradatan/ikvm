@@ -39,10 +39,10 @@
     <PostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>NET_4_0;CLASSGC;NETCOREAPP;NETCOREAPP3_0;NETSTANDARD2_0;DEBUG;NETSTANDARD</DefineConstants>
+    <DefineConstants>NET_4_0;CLASSGC</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug FIRST PASS' ">
-    <DefineConstants>NET_4_0;CLASSGC;DEBUG;NETCOREAPP;NETCOREAPP3_0;FIRST_PASS;DEBUG_FIRST_PASS;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug FIRST PASS|AnyCPU'">
+    <DefineConstants>NET_4_0;CLASSGC;DEBUG;FIRST_PASS</DefineConstants>
     <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
     <Optimize Condition=" '$(Optimize)' == '' ">false</Optimize>
   </PropertyGroup>
@@ -50,17 +50,14 @@
     <DefineConstants>RELEASE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IKVM.OpenJDK.Core">
+    <Reference Include="IKVM.OpenJDK.Core, Version=0.46.0.5, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\bin\IKVM.OpenJDK.Core.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Misc">
+    <Reference Include="IKVM.OpenJDK.Misc, Version=0.46.0.5, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\bin\IKVM.OpenJDK.Misc.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Util">
+    <Reference Include="IKVM.OpenJDK.Util, Version=0.46.0.5, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\bin\IKVM.OpenJDK.Util.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="IKVM.Runtime.JNI">
       <HintPath>IKVM.Runtime.JNI.dll</HintPath>

@@ -921,12 +921,22 @@ namespace IKVM.Internal
 			MethodBuilder mb = method as MethodBuilder;
 			if(mb != null)
 			{
-				method = mb.Module.ResolveMethod(mb.GetToken().Token);
+#if NETSTANDARD
+				var metadataToken = mb.MetadataToken;
+#else
+				var metadataToken = mb.GetToken().Token;
+#endif
+				method = mb.Module.ResolveMethod(metadataToken);
 			}
 			ConstructorBuilder cb = method as ConstructorBuilder;
 			if(cb != null)
 			{
-				method = cb.Module.ResolveMethod(cb.GetToken().Token);
+#if NETSTANDARD
+				var metadataToken = cb.MetadataToken;
+#else
+				var metadataToken = cb.GetToken().Token;
+#endif
+				method = cb.Module.ResolveMethod(metadataToken);
 			}
 		}
 
