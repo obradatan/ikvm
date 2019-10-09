@@ -19,7 +19,7 @@
 
   Jeroen Frijters
   jeroen@frijters.net
-  
+
 */
 
 @cli.System.Reflection.AssemblyCopyrightAttribute.Annotation(
@@ -54,7 +54,7 @@
 
 @cli.System.Runtime.CompilerServices.InternalsVisibleToAttribute.Annotation("@RUNTIME@")
 
-@cli.System.Security.AllowPartiallyTrustedCallersAttribute.Annotation
+//@cli.System.Security.AllowPartiallyTrustedCallersAttribute.Annotation
 
 // magic type to collect Assembly attributes
 interface assembly {}

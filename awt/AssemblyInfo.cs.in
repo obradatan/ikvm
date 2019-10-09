@@ -19,20 +19,20 @@
 
   Jeroen Frijters
   jeroen@frijters.net
-  
+
 */
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
 //
-// General Information about an assembly is controlled through the following 
+// General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
 [assembly: AssemblyTitle("IKVM.NET AWT Support")]
 [assembly: AssemblyDescription("Winforms peers and 'native' code")]
 
-[assembly: System.Security.AllowPartiallyTrustedCallers]
+//[assembly: System.Security.AllowPartiallyTrustedCallers]
 
 #if SIGNCODE
 [assembly: InternalsVisibleTo("IKVM.OpenJDK.SwingAWT, PublicKey=@PUBLICKEY@")]
