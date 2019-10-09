@@ -284,6 +284,7 @@
 
     <target name="core.netstandard" depends="version response.netstandard.gen.txt">
         <copy file="../bin/IKVM.Runtime.dll" todir="." />
+        <copy file="../bin/IKVM.AWT.WinForms.dll" todir="." />
         <exec program="${project::get-base-directory()}/../bin/ikvmc.exe" useruntimeengine="true">
             <arg value="-version:${VERSION}" />
             <arg value="${signoption}" />
@@ -300,6 +301,7 @@
             <arg value="-rt:C:\Windows\Microsoft.NET\Framework\v4.0.30319\netstandard.dll" />
             <arg value="-rt:../packages/System.Data.Odbc.4.5.0/ref/netstandard2.0/System.Data.Odbc.dll" />
             <arg value="-rt:../packages/System.Configuration.ConfigurationManager.4.5.0/ref/netstandard2.0/System.Configuration.ConfigurationManager.dll" />
+            <arg value="-rt:../packages/System.Drawing.Common.4.6.0/ref/netstandard2.0/System.Drawing.Common.dll" />
             <!-- we already know that the JNI assembly is not available, so suppress the warning -->
             <arg value="-nowarn:110" />
             <arg value="@response.netstandard.gen.txt" />
@@ -311,10 +313,12 @@
             <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Core.dll" />
             <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Jdbc.dll" />
             <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Management.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Media.dll" />
             <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Misc.dll" />
             <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Naming.dll" />
             <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Remoting.dll" />
             <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Security.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.SwingAWT.dll" />
             <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Text.dll" />
             <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Util.dll" />
             <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.XML.API.dll" />

@@ -22,6 +22,7 @@
 
 */
 
+#if !NETSTANDARD
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -402,3 +403,4 @@ namespace ikvm.awt
 
     }
 }
+#endif

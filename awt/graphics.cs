@@ -30,7 +30,9 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Globalization;
+#if !NETSTANDARD
 using System.Windows.Forms;
+#endif
 using java.awt.image;
 using java.util;
 
@@ -85,6 +87,7 @@ namespace ikvm.awt
 		}
     }
 
+#if !NETSTANDARD
     internal class ComponentGraphics : NetGraphics
     {
         private readonly Control control;
@@ -123,6 +126,7 @@ namespace ikvm.awt
             this.g.CopyFromScreen(src, dest, new Size(width, height));
 		}
     }
+#endif
 
     internal class PrintGraphicsContext
     {
@@ -1323,7 +1327,11 @@ namespace ikvm.awt
 
         public override java.awt.GraphicsConfiguration getDeviceConfiguration()
         {
+#if NETSTANDARD
+            throw new NotImplementedException("Windows Forms is not available in .NET Standard");
+#else
 			return new NetGraphicsConfiguration(Screen.PrimaryScreen);
+#endif
         }
 
         public override void setComposite(java.awt.Composite comp)
@@ -1922,6 +1930,7 @@ namespace ikvm.awt
         }
     }
 
+#if !NETSTANDARD
     sealed class NetGraphicsConfiguration : java.awt.GraphicsConfiguration
     {
         internal readonly Screen screen;
@@ -2136,5 +2145,5 @@ namespace ikvm.awt
             return devices;
         }
     }
-
+#endif
 }

@@ -50,6 +50,7 @@ jeroen@frijters.net
 
 */
 
+#if !NETSTANDARD
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -5391,3 +5392,4 @@ namespace ikvm.awt
     }
 
 }
+#endif

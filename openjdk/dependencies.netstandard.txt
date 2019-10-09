@@ -69,6 +69,17 @@ IKVM.OpenJDK.XML.Crypto
 ->IKVM.OpenJDK.XML.Parse
 ->IKVM.OpenJDK.XML.XPath
 
+IKVM.OpenJDK.SwingAWT
+->System.Drawing.Common
+->IKVM.AWT.WinForms
+->IKVM.OpenJDK.Util
+->IKVM.OpenJDK.Text
+->IKVM.OpenJDK.XML.API
+->IKVM.OpenJDK.Charsets
+->IKVM.OpenJDK.Beans
+->IKVM.OpenJDK.Media
+->IKVM.OpenJDK.Remoting
+
 IKVM.OpenJDK.Charsets
 
 IKVM.OpenJDK.Util
@@ -126,3 +137,10 @@ IKVM.OpenJDK.Beans
 ->IKVM.OpenJDK.SwingAWT
 ->IKVM.OpenJDK.XML.API
 ->IKVM.OpenJDK.Util
+
+IKVM.OpenJDK.Media
+->System.Drawing.Common
+->IKVM.OpenJDK.SwingAWT
+->IKVM.OpenJDK.XML.API
+->IKVM.OpenJDK.Util
+->IKVM.OpenJDK.Text
