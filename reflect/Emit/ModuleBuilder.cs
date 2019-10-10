@@ -430,16 +430,16 @@ namespace IKVM.Reflection.Emit
 			get { return asm; }
 		}
 
-		internal override (Type, bool? isForwarded) FindType(TypeName name)
+		internal override Type FindType(TypeName name)
 		{
 			foreach (Type type in types)
 			{
 				if (type.__Namespace == name.Namespace && type.__Name == name.Name)
 				{
-					return (type, null);
+					return type;
 				}
 			}
-			return (null, null);
+			return null;
 		}
 
 		internal override void GetTypesImpl(List<Type> list)
@@ -626,7 +626,7 @@ namespace IKVM.Reflection.Emit
 						var typeName = TypeName.Split(TypeNameParser.Unescape(type.FullName));
 						var assembly = type.Assembly;
 						var typeDefinitions = universe.assemblies.Select(a => (a, a.ManifestModule.FindType(typeName)))
-							.Where(t => t.Item2.Item1 != null);
+							.Where(t => t.Item2 != null);
 
 						bool isNetStandardAssembly(Assembly asm)
 						{
@@ -707,15 +707,6 @@ namespace IKVM.Reflection.Emit
 
 		private int FindOrAddAssemblyRef(AssemblyName name)
 		{
-//			if (universe.IsTargettingNetStandard)
-//			{
-//				//Redirect to .net standard
-//				if (name.Name == "mscorlib" || name.Name == "System" || name.Name == "System.Data")
-//				{
-//					name = asm.universe.GetAssemblies().First(a => a.GetName().Name == "netstandard").GetName();
-//				}
-//			}
-
 			AssemblyRefTable.Record rec = new AssemblyRefTable.Record();
 			Version ver = name.Version;
 			rec.MajorVersion = (ushort)ver.Major;

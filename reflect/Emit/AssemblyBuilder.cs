@@ -511,7 +511,7 @@ namespace IKVM.Reflection.Emit
 		{
 			foreach (ModuleBuilder mb in modules)
 			{
-				var (type, _) = mb.FindType(typeName);
+				var type = mb.FindType(typeName);
 				if (type != null)
 				{
 					return type;
@@ -519,7 +519,7 @@ namespace IKVM.Reflection.Emit
 			}
 			foreach (Module module in addedModules)
 			{
-				var (type, _) = module.FindType(typeName);
+				var type = module.FindType(typeName);
 				if (type != null)
 				{
 					return type;
@@ -667,9 +667,9 @@ namespace IKVM.Reflection.Emit
 			get { return assembly; }
 		}
 
-		internal override (Type, bool? isForwarded) FindType(TypeName typeName)
+		internal override Type FindType(TypeName typeName)
 		{
-			return (null, null);
+			return null;
 		}
 
 		internal override void  GetTypesImpl(List<Type> list)
