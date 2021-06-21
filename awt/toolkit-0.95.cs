@@ -1731,15 +1731,15 @@ namespace ikvm.awt
 			int modifiers = 0;
 			if ((keys & Keys.Shift) != 0)
 			{
-				modifiers |= java.awt.@event.InputEvent.SHIFT_DOWN_MASK;
-			}
+				modifiers |= (java.awt.@event.InputEvent.SHIFT_DOWN_MASK | java.awt.@event.InputEvent.SHIFT_MASK);
+            }
             switch (keys & (Keys.Control | Keys.Alt))
             {
                 case Keys.Control:
-                    modifiers |= java.awt.@event.InputEvent.CTRL_DOWN_MASK;
+                    modifiers |= (java.awt.@event.InputEvent.CTRL_DOWN_MASK | java.awt.@event.InputEvent.CTRL_MASK);
                     break;
                 case Keys.Alt:
-                    modifiers |= java.awt.@event.InputEvent.ALT_DOWN_MASK;
+                    modifiers |= (java.awt.@event.InputEvent.ALT_DOWN_MASK | java.awt.@event.InputEvent.ALT_MASK);
                     break;
                 case Keys.Control | Keys.Alt:
                     modifiers |= java.awt.@event.InputEvent.ALT_GRAPH_DOWN_MASK;
@@ -4223,6 +4223,16 @@ namespace ikvm.awt
 		{
 			return new MyForm(_insets);
 		}
+
+        public override java.awt.Point getLocationOnScreen()
+        {
+            return NetToolkit.Invoke<java.awt.Point>(delegate
+            {
+                Point p = control.Location;
+                return new java.awt.Point(p.X, p.Y);
+            });
+        }
+
     }
 
     sealed class NetDialogPeer : NetWindowPeer, java.awt.peer.DialogPeer
