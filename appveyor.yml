@@ -5,7 +5,7 @@ branches:
     only:
     - v0.47
 version: 1.0.{build}
-os: Visual Studio 2013
+os: Visual Studio 2017
 install:
 - choco install nant
 - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
@@ -18,7 +18,7 @@ before_build:
 - set PATH=C:\Program Files\Java\jdk1.6.0\bin;%PATH%
 - ps: wget http://www.frijters.net/openjdk6-b22-stripped.zip -OutFile openjdk6-b22-stripped.zip
 - ps: Expand-Archive .\openjdk6-b22-stripped.zip -DestinationPath ..\
-- call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars32.bat"
+- call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
 build_script:
 - nant signed native
 after_build:
