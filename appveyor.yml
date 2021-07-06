@@ -25,4 +25,6 @@ after_build:
 - nuget pack IKVM-Ullink.nuspec
 artifacts:
 - path: IKVM-Ullink*.nupkg
+- path: bin-x86
+  type: zip
 test: off
