@@ -19,7 +19,7 @@
 
   Jeroen Frijters
   jeroen@frijters.net
-
+  
 */
 using System;
 using System.Collections.Generic;
@@ -442,10 +442,6 @@ namespace IKVM.Runtime
 
 		internal static object Unwrap(int i)
 		{
-			if (i == 0)
-			{
-				return null;
-			}
 			i = -i;
 			if ((i & (1 << 30)) != 0)
 			{
@@ -598,7 +594,7 @@ namespace IKVM.Runtime
 			new pf_void(JNIEnv.ExceptionClear), //virtual void JNICALL ExceptionClear();
 			new pf_void_pbyte(JNIEnv.FatalError), //virtual void JNICALL FatalError(const char *msg);
 
-			new pf_int_int(JNIEnv.PushLocalFrame), //virtual jint JNICALL PushLocalFrame(jint capacity);
+			new pf_int_int(JNIEnv.PushLocalFrame), //virtual jint JNICALL PushLocalFrame(jint capacity); 
 			new pf_IntPtr_IntPtr(JNIEnv.PopLocalFrame), //virtual jobject JNICALL PopLocalFrame(jobject result);
 
 			new pf_IntPtr_IntPtr(JNIEnv.NewGlobalRef), //virtual jobject JNICALL NewGlobalRef(jobject lobj);
@@ -3351,7 +3347,7 @@ namespace IKVM.Runtime
 			finally
 			{
 				h.Free();
-			}
+			}		
 		}
 
 		internal static void ReleasePrimitiveArrayCritical(JNIEnv* pEnv, jarray array, void* carray, jint mode)
@@ -3410,7 +3406,7 @@ namespace IKVM.Runtime
 				{
 					*isCopy = JNI_TRUE;
 				}
-				return (jchar*)(void*)Marshal.StringToHGlobalUni(s);
+				return (jchar*)(void*)Marshal.StringToHGlobalUni(s);		
 			}
 			SetPendingException(pEnv, new java.lang.NullPointerException());
 			return null;
@@ -3501,7 +3497,7 @@ namespace IKVM.Runtime
 				return IntPtr.Zero;
 			}
 		}
-
+		
 		internal static jlong GetDirectBufferCapacity(JNIEnv* pEnv, jobject buf)
 		{
 			try
