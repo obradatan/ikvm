@@ -10250,7 +10250,7 @@ sun/security/jgss/wrapper/SunNativeProvider.java
 @OPENJDK@/jdk/src/share/classes/javax/swing/plaf/basic/BasicComboBoxEditor.java
 @OPENJDK@/jdk/src/share/classes/javax/swing/plaf/basic/BasicComboBoxRenderer.java
 @OPENJDK@/jdk/src/share/classes/javax/swing/plaf/basic/BasicComboBoxUI.java
-@OPENJDK@/jdk/src/share/classes/javax/swing/plaf/basic/BasicComboPopup.java
+javax/swing/plaf/basic/BasicComboPopup.java
 @OPENJDK@/jdk/src/share/classes/javax/swing/plaf/basic/BasicDesktopIconUI.java
 @OPENJDK@/jdk/src/share/classes/javax/swing/plaf/basic/BasicDesktopPaneUI.java
 @OPENJDK@/jdk/src/share/classes/javax/swing/plaf/basic/BasicDirectoryModel.java
@@ -10647,7 +10647,7 @@ sun/security/jgss/wrapper/SunNativeProvider.java
 @OPENJDK@/jdk/src/share/classes/javax/swing/text/ZoneView.java
 @OPENJDK@/jdk/src/share/classes/javax/swing/Timer.java
 @OPENJDK@/jdk/src/share/classes/javax/swing/TimerQueue.java
-@OPENJDK@/jdk/src/share/classes/javax/swing/ToolTipManager.java
+javax/swing/ToolTipManager.java
 @OPENJDK@/jdk/src/share/classes/javax/swing/TransferHandler.java
 @OPENJDK@/jdk/src/share/classes/javax/swing/tree/AbstractLayoutCache.java
 @OPENJDK@/jdk/src/share/classes/javax/swing/tree/DefaultMutableTreeNode.java
