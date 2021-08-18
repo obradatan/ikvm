@@ -17,7 +17,7 @@
         <copy file="libikvm-native.so" todir="../bin"/>
     </target>
     <target name="ikvm-native-win32">
-        <property name="cpu-arch" value="x86" />
+        <property name="cpu-arch" value="x64" />
         <!-- HACK this is pretty lame hack to guess if we're about to run the x64 version of CL.EXE -->
         <property name="cpu-arch" value="x64" if="${string::contains(string::to-lower(environment::get-variable('PATH')), 'vc\bin\amd64')}" />
         <property name="cpu-arch" value="x64" if="${string::contains(string::to-lower(environment::get-variable('PATH')), 'vc\bin\x86_amd64')}" />
