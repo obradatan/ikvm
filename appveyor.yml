@@ -8,6 +8,7 @@ before_build:
 - set PATH=C:\Program Files\Java\jdk1.6.0\bin;%PATH%
 - ps: wget https://github.com/Itiviti/ikvm-openjdk6-b22/archive/refs/heads/main.zip -OutFile openjdk6-b22-stripped.zip
 - ps: Expand-Archive .\openjdk6-b22-stripped.zip -DestinationPath ..\
+- ps: mv ..\ikvm-openjdk6-b22-main\openjdk6-b22\ ..\
 - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"    
 after_build:
 - nuget pack IKVM-Ullink.nuspec
