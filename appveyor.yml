@@ -13,29 +13,10 @@ before_build:
 - ps: wget http://www.frijters.net/openjdk6-b22-stripped.zip -OutFile openjdk6-b22-stripped.zip
 - ps: Expand-Archive .\openjdk6-b22-stripped.zip -DestinationPath ..\
 - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"    
+after_build:
+- nuget pack IKVM-Ullink.nuspec
 artifacts:
 - path: IKVM-Ullink*.nupkg
 - path: bin-x64
   type: zip
 test: off
-after_build:
-- nuet pack IKVM-Ullink.nuspec
-
-# Override the build steps for main branch and the rest
-for:
-- 
-    branches:
-        only:
-        - v0.47
-    environment:
-        decrypt_pass:
-         secure: lK0NTOd98gxMkMDvj3IUWCAW/3vC8X8mqSlGGwQ16dH/yGg84/2zmuFzGG9W8R1w
-    build_script:
-    - nant signed native
-
-- 
-    branches:
-        except:
-        - v0.47
-    build_script:
-    - nant managed native
