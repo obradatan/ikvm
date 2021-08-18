@@ -2,7 +2,6 @@ os: Visual Studio 2017
 version: 1.0.{build}
 install:
 - choco install nant
-
 before_build:
 - refreshenv
 - set JAVA_HOME=C:\Program Files\Java\jdk1.6.0
