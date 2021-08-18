@@ -19,8 +19,10 @@ artifacts:
   type: zip
 test: off
 after_build:
-- nuget pack IKVM-Ullink.nuspec
+- nuet pack IKVM-Ullink.nuspec
 
+# Override the build steps for main branch and the rest
+for:
 - 
     branches:
         only:
