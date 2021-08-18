@@ -21,3 +21,23 @@ artifacts:
   type: zip
 test: off
 
+
+# Override the build steps for main branch and the rest
+for:
+- 
+    branches:
+        only:
+        - v0.47
+    environment:
+        decrypt_pass:
+         secure: lK0NTOd98gxMkMDvj3IUWCAW/3vC8X8mqSlGGwQ16dH/yGg84/2zmuFzGG9W8R1w
+    build_script:
+    - nant signed native
+
+- 
+    branches:
+        except:
+        - v0.47
+    build_script:
+    - nant managed native
+
