@@ -20,3 +20,4 @@ artifacts:
 - path: bin-x64
   type: zip
 test: off
+
