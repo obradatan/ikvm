@@ -614,8 +614,6 @@ assembly.class
     sun/java2d/*.class
     sun/java2d/cmm/lcms/*.class
     sun/java2d/pipe/*.class
-    javax/swing/*.class
-    javax/swing/plaf/basic/*.class
     @OPENJDK@/build/linux-amd64/gensrc/com/sun/accessibility/internal/resources/*.class
     @OPENJDK@/build/linux-amd64/gensrc/com/sun/java/swing/plaf/nimbus/*.class
     @OPENJDK@/build/linux-amd64/gensrc/com/sun/swing/internal/plaf/basic/resources/*.class
