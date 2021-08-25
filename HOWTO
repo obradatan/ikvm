@@ -1,7 +1,4 @@
 IKVM.NET Build Instructions
-
-
-
 ---------------------------
 
 This IKVM.NET source bundle requires OpenJDK 6 b22 sources (and build artifacts).
