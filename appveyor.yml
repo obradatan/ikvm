@@ -1,15 +1,25 @@
 os: Visual Studio 2017
 version: 1.0.{build}
+environment:
+  decrypt_pass:
+   secure: lK0NTOd98gxMkMDvj3IUWCAW/3vC8X8mqSlGGwQ16dH/yGg84/2zmuFzGG9W8R1w
 install:
 - choco install nant
 before_build:
 - refreshenv
+- echo %APPVEYOR_REPO_BRANCH%
 - set JAVA_HOME=C:\Program Files\Java\jdk1.6.0
 - set PATH=C:\Program Files\Java\jdk1.6.0\bin;%PATH%
 - ps: wget https://github.com/Itiviti/ikvm-openjdk6-b22/archive/refs/heads/main.zip -OutFile openjdk6-b22-stripped.zip
 - ps: Expand-Archive .\openjdk6-b22-stripped.zip -DestinationPath ..\
 - ps: mv ..\ikvm-openjdk6-b22-main\openjdk6-b22\ ..\
 - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"    
+build_script:
+- ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
+- IF DEFINED decrypt_pass appveyor-tools\secure-file -decrypt C:\projects\ikvm\tools\ikvm-key.snk.enc -secret "%decrypt_pass%"
+- IF DEFINED decrypt_pass sn -i C:\projects\ikvm\tools\ikvm-key.snk ikvm-key
+- set PATH=C:\Program Files (x86)\Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools;%PATH%
+- IF DEFINED decrypt_pass (nant signed native) ELSE (nant managed native)
 after_build:
 - nuget pack IKVM-Ullink.nuspec
 artifacts:
@@ -17,27 +27,3 @@ artifacts:
 - path: bin-x64
   type: zip
 test: off
-
-# Override the build steps for main branch and the rest
-for:
-- 
-    branches:
-        only:
-        - v0.47
-    environment:
-        decrypt_pass:
-         secure: lK0NTOd98gxMkMDvj3IUWCAW/3vC8X8mqSlGGwQ16dH/yGg84/2zmuFzGG9W8R1w
-    build_script:
-    - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
-    - ps: appveyor-tools\secure-file -decrypt C:\projects\ikvm\tools\ikvm-key.snk.enc -secret "$env:decrypt_pass"
-    - set PATH=C:\Program Files (x86)\Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools;%PATH%
-    - cmd: sn -i C:\projects\ikvm\tools\ikvm-key.snk ikvm-key
-    - nant signed native
-
-- 
-    branches:
-        except:
-        - v0.47
-    build_script:
-    - nant managed native
-
