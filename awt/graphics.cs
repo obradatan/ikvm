@@ -2033,18 +2033,14 @@ namespace ikvm.awt
 
         public override java.awt.GraphicsConfiguration[] getConfigurations()
         {
-            Screen[] screens = Screen.AllScreens;
-            NetGraphicsConfiguration[] configs = new NetGraphicsConfiguration[screens.Length];
-            for (int i = 0; i < screens.Length; i++)
-            {
-                configs[i] = new NetGraphicsConfiguration(screens[i]);
-            }
+            NetGraphicsConfiguration[] configs = new NetGraphicsConfiguration[1];
+            configs[0] = new NetGraphicsConfiguration(screen);
             return configs;
         }
 
         public override java.awt.GraphicsConfiguration getDefaultConfiguration()
         {
-            return new NetGraphicsConfiguration(Screen.PrimaryScreen);
+            return new NetGraphicsConfiguration(screen);
         }
 
         public override string getIDstring()

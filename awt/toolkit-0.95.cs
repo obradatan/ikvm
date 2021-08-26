@@ -1731,15 +1731,15 @@ namespace ikvm.awt
 			int modifiers = 0;
 			if ((keys & Keys.Shift) != 0)
 			{
-				modifiers |= java.awt.@event.InputEvent.SHIFT_DOWN_MASK;
-			}
+				modifiers |= (java.awt.@event.InputEvent.SHIFT_DOWN_MASK | java.awt.@event.InputEvent.SHIFT_MASK);
+            }
             switch (keys & (Keys.Control | Keys.Alt))
             {
                 case Keys.Control:
-                    modifiers |= java.awt.@event.InputEvent.CTRL_DOWN_MASK;
+                    modifiers |= (java.awt.@event.InputEvent.CTRL_DOWN_MASK | java.awt.@event.InputEvent.CTRL_MASK);
                     break;
                 case Keys.Alt:
-                    modifiers |= java.awt.@event.InputEvent.ALT_DOWN_MASK;
+                    modifiers |= (java.awt.@event.InputEvent.ALT_DOWN_MASK | java.awt.@event.InputEvent.ALT_MASK);
                     break;
                 case Keys.Control | Keys.Alt:
                     modifiers |= java.awt.@event.InputEvent.ALT_GRAPH_DOWN_MASK;
@@ -4223,6 +4223,16 @@ namespace ikvm.awt
 		{
 			return new MyForm(_insets);
 		}
+
+        public override java.awt.Point getLocationOnScreen()
+        {
+            return NetToolkit.Invoke<java.awt.Point>(delegate
+            {
+                Point p = control.Location;
+                return new java.awt.Point(p.X, p.Y);
+            });
+        }
+
     }
 
     sealed class NetDialogPeer : NetWindowPeer, java.awt.peer.DialogPeer
@@ -5079,7 +5089,7 @@ namespace ikvm.awt
             {
                 return contents;
             }
-            return new NetClipboardTransferable(Clipboard.GetDataObject());
+            return new NetClipboardTransferable(NetToolkit.Invoke<IDataObject>(Clipboard.GetDataObject));
         }
     }
 
@@ -5231,17 +5241,18 @@ namespace ikvm.awt
                 java.awt.datatransfer.DataFlavor[] flavors =
                     (java.awt.datatransfer.DataFlavor[])
                     (flavorMap.keySet().toArray(new java.awt.datatransfer.DataFlavor[0]));
-                for(int i=0; i<flavors.Length; i++)
+                for (int i = 0; i < flavors.Length; i++)
                 {
                     java.awt.datatransfer.DataFlavor df = flavors[i];
-                    long format = ((java.lang.Long) flavorMap.get(df)).longValue();
+                    long format = ((java.lang.Long)flavorMap.get(df)).longValue();
                     string stringFormat = getNativeClipboardFormatName(format);
-                    if (stringFormat==null) continue; // clipboard format is not registered in Windows system
-                    object formatData = data.GetData(stringFormat);
-                    if (formatData == null) continue; // no data for that format
+                    if (stringFormat == null) continue; // clipboard format is not registered in Windows system
                     object translatedData = null;
                     if (df.isFlavorJavaFileListType())
                     {
+                        object formatData = data.GetData(stringFormat);
+                        if (formatData == null) continue; // no data for that format
+
                         // translate string[] into java.util.List<java.io.File>
                         string[] nativeFileList = (string[])formatData;
                         List fileList = new ArrayList(nativeFileList.Length);
@@ -5252,23 +5263,40 @@ namespace ikvm.awt
                         }
                         translatedData = fileList;
                     }
-                    else if (java.awt.datatransfer.DataFlavor.imageFlavor.equals(df) && formatData is Bitmap)
+                    else if (java.awt.datatransfer.DataFlavor.imageFlavor.equals(df))
                     {
-                        // translate System.Drawing.Bitmap into java.awt.Image
-                        translatedData = new java.awt.image.BufferedImage((Bitmap) formatData);
+                        /*
+                        object formatData = data.GetData(stringFormat);
+                        if (formatData == null) continue; // no data for that format
+
+                        if (formatData is Bitmap) {
+                            // translate System.Drawing.Bitmap into java.awt.Image
+                            translatedData = new java.awt.image.BufferedImage((Bitmap) formatData);
+                        }
+                        */
                     }
-                    else if (formatData is string)
+                    else if (df.isFlavorTextType() ||
+                        ((java.lang.Class)typeof(java.io.Reader)).equals(df.getRepresentationClass()) ||
+                        ((java.lang.Class)typeof(java.io.InputStream)).equals(df.getRepresentationClass())
+                        )
                     {
-                        if (df.isFlavorTextType())
-                            translatedData = formatData;
-                        else if (((java.lang.Class)typeof(java.io.Reader)).equals(df.getRepresentationClass()))
-                            translatedData = new java.io.StringReader((string) formatData);
-                        else if (((java.lang.Class)typeof(java.io.InputStream)).equals(df.getRepresentationClass()))
-                            translatedData = new java.io.StringBufferInputStream((string)formatData);
-                        else
-                            throw new java.awt.datatransfer.UnsupportedFlavorException(df);
+                        object formatData = data.GetData(stringFormat);
+                        if (formatData == null) continue; // no data for that format
+
+                        if (formatData is string)
+                        {
+
+                            if (df.isFlavorTextType())
+                                translatedData = formatData;
+                            else if (((java.lang.Class)typeof(java.io.Reader)).equals(df.getRepresentationClass()))
+                                translatedData = new java.io.StringReader((string)formatData);
+                            else if (((java.lang.Class)typeof(java.io.InputStream)).equals(df.getRepresentationClass()))
+                                translatedData = new java.io.StringBufferInputStream((string)formatData);
+                            else
+                                throw new java.awt.datatransfer.UnsupportedFlavorException(df);
+                        }
                     }
-                    if (translatedData!=null)
+                    if (translatedData != null)
                         map.put(df, translatedData);
                 }
             }
@@ -5281,12 +5309,12 @@ namespace ikvm.awt
             SortedMap/*<java.lang.Long,java.awt.datatransfer.DataFlavor>*/ formatMap = getFormatsForTransferable(transferable, flavorMap);
             for (Iterator iterator = formatMap.entrySet().iterator(); iterator.hasNext();)
             {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                java.lang.Long lFormat = (java.lang.Long) entry.getKey();
+                Map.Entry entry = (Map.Entry)iterator.next();
+                java.lang.Long lFormat = (java.lang.Long)entry.getKey();
                 long format = lFormat == null ? -1 : lFormat.longValue();
-                java.awt.datatransfer.DataFlavor flavor = (java.awt.datatransfer.DataFlavor) entry.getValue();
+                java.awt.datatransfer.DataFlavor flavor = (java.awt.datatransfer.DataFlavor)entry.getValue();
                 object contents = transferable.getTransferData(flavor);
-                if (contents==null) continue;
+                if (contents == null) continue;
                 try
                 {
                     if (java.awt.datatransfer.DataFlavor.javaFileListFlavor.equals(flavor))
@@ -5296,14 +5324,34 @@ namespace ikvm.awt
                             new System.Collections.Specialized.StringCollection();
                         for (int i = 0; i < list.size(); i++)
                         {
-                            files.Add(((java.io.File) list.get(i)).getAbsolutePath());
+                            files.Add(((java.io.File)list.get(i)).getAbsolutePath());
                         }
                         obj.SetFileDropList(files);
                     }
                     else if (flavor.isFlavorTextType())
                     {
-                        if (contents is string) 
-                            obj.SetText((string) transferable.getTransferData(flavor));
+                        if (contents is string)
+                        {
+                            obj.SetText((string)transferable.getTransferData(flavor));
+                        }
+                        else
+                        {
+                            try
+                            {
+                                java.io.Reader reader = flavor.getReaderForText(transferable);
+                                java.io.StringWriter writer = new java.io.StringWriter();
+                                char[] buffer = new char[1024];
+                                int n;
+                                while ((n = reader.read(buffer)) != -1)
+                                {
+                                    writer.write(buffer, 0, n);
+                                }
+                                obj.SetText(writer.toString());
+                            }
+                            catch
+                            {
+                            }
+                        }
                     }
                     else if (java.awt.datatransfer.DataFlavor.imageFlavor.equals(flavor))
                     {
