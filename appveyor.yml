@@ -20,11 +20,10 @@ build_script:
 - set OLD_PATH=%PATH%
 - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
 - IF DEFINED decrypt_pass sn -i C:\projects\ikvm\tools\ikvm-key.snk ikvm-key
-- set PATH=%OLD_PATH%
 - set PATH=C:\Program Files (x86)\Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools;%PATH%
 - IF DEFINED decrypt_pass (nant signed) ELSE (nant managed)
-- call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
 - nant native
+- set PATH=%OLD_PATH%
 - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
 - nant native
 after_build:
