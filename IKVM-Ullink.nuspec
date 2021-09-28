@@ -37,5 +37,9 @@
         <file src="bin\IKVM.Reflection.dll" target="lib\net35\IKVM.Reflection.dll" />
         <file src="bin\IKVM.Runtime.dll" target="lib\net35\IKVM.Runtime.dll" />
         <file src="bin\IKVM.Runtime.JNI.dll" target="lib\net35\IKVM.Runtime.JNI.dll" />
+        <file src="bin-x64\ikvm-native.dll" target="runtimes\win7-x64\native\ikvm-native.dll" />
+        <file src="bin-x64\JVM.dll" target="runtimes\win7-x64\native\JVM.dll" />
+        <file src="bin-x86\ikvm-native.dll" target="runtimes\win7-x86\native\ikvm-native.dll" />
+        <file src="bin-x86\JVM.dll" target="runtimes\win7-x86\native\JVM.dll" />
     </files>
 </package>
